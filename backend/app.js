@@ -1,8 +1,11 @@
 const express = require('express');
 const app = express();
-const port = 3000;
 const route = require('./routes');
 const db = require('./config/db');
+
+require('dotenv').config(); // Load biến môi trường từ .env
+
+const port = process.env.PORT || 3000;
 
 // connect to db
 db.connect((err) => {
