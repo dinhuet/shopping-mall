@@ -3,13 +3,12 @@ const User = require('../app/models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-
 const getUserById = async (userId) => {
     return await User.findById(userId);
 };
 
 const getUserByEmail = async (email) => {
-    return await User.findOne({email});
+    return await User.findOne({ email });
 };
 
 const getAllUser = async () => {
@@ -18,13 +17,14 @@ const getAllUser = async () => {
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const { name, email, password, isAdmin, confirmPassword, phone } = newUser;
+        const { name, email, password, isAdmin, confirmPassword, phone } =
+            newUser;
         try {
             const existingUser = await User.findOne({ email });
             if (existingUser) {
-                return resolve ({
+                return resolve({
                     status: 'OK',
-                    message: 'The email is already.'
+                    message: 'The email is already.',
                 });
             }
 
@@ -38,7 +38,7 @@ const createUser = (newUser) => {
             ) {
                 return resolve({
                     status: '400',
-                    message: 'Missing required fields'
+                    message: 'Missing required fields',
                 });
             }
 
@@ -47,13 +47,15 @@ const createUser = (newUser) => {
                 reject(new Error('Passwords do not match'));
             }
             if (password.length < 6) {
-                return reject(new Error('Password must be at least 6 characters long'));
+                return reject(
+                    new Error('Password must be at least 6 characters long'),
+                );
             }
 
             // check email
             const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.(com|net|org|edu|vn)$/;
             if (!emailRegex.test(email)) {
-                    return reject(new Error('Invalid email format'));
+                return reject(new Error('Invalid email format'));
             }
 
             const hashPassword = await bcrypt.hash(password, 10);
@@ -95,8 +97,8 @@ const createUser = (newUser) => {
         } catch (error) {
             reject(error);
         }
-    })
-}
+    });
+};
 
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
@@ -105,7 +107,7 @@ const loginUser = (userLogin) => {
             if (!email || !password) {
                 return resolve({
                     status: '400',
-                    message: 'Missing required fields'
+                    message: 'Missing required fields',
                 });
             }
 
@@ -114,14 +116,14 @@ const loginUser = (userLogin) => {
             if (!user) {
                 return resolve({
                     status: '404',
-                    message: 'User not found'
+                    message: 'User not found',
                 });
             }
             // check password
             if (!bcrypt.compareSync(password, user.password)) {
                 return resolve({
                     status: '401',
-                    message: 'Invalid password'
+                    message: 'Invalid password',
                 });
             } else {
                 const access_token = jwt.sign(
@@ -147,26 +149,18 @@ const loginUser = (userLogin) => {
         } catch (error) {
             reject(error);
         }
-    })
-}
+    });
+};
 
 const logoutUser = (userLogout) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { refresh_token } = userLogout;
-            if (!refresh_token) {
-                return resolve({
-                    status: '400',
-                    message: 'Missing refresh token'
-                });
-            }
-
-            const user = await User.findOne({ refresh_token });
+            const user = await User.findOne({ _id: userLogout.id });
 
             if (!user) {
                 return resolve({
                     status: '404',
-                    message: 'User not found'
+                    message: 'User not found',
                 });
             }
 
@@ -179,7 +173,14 @@ const logoutUser = (userLogout) => {
         } catch (error) {
             reject(error);
         }
-    })
-}
+    });
+};
 
-module.exports = { getUserById, getAllUser, createUser, loginUser, logoutUser };
+module.exports = {
+    getUserById,
+    getAllUser,
+    getUserByEmail,
+    createUser,
+    loginUser,
+    logoutUser,
+};

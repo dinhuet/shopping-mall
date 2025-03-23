@@ -1,20 +1,27 @@
 const jwt = require('jsonwebtoken');
 const userService = require('../../services/UserService');
 
- const verifyToken = (req, res, next) => {
-    const user = userService.getUserByEmail(req.body);
-    const token = user.refresh-token;  // Đọc từ cookie
-    if (!token) {
-        return res.status(401).json({ message: 'Token not provided' });
-    }
+const verifyToken = async (req, res, next) => {
+    try {
+        // gui qua header khi co front
+        // const token = req.headers.authorization?.aplit(" ")[1];
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ message: 'Invalid token' });
+        const token = req.body.refresh_token;
+        if (!token) {
+            return res.status(401).json({ message: 'Token not provided' });
         }
-        req.user = user;
-        next();
-    });
-}
+        
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            if (err) {
+                return res.status(403).json({ message: 'Invalid token' });
+            }
+            req.user = decoded; // 
+            next();
+        });
+    } catch (error) {
+        console.error('Error verifying token:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
 
 module.exports = verifyToken;

@@ -4,7 +4,6 @@ const userService = require('../../services/UserService');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-
 const {
     mongooseToObject,
     muiltipleMongooseToObject,
@@ -38,54 +37,70 @@ class UserController {
         }
 
         jwt.verify(refresh_token, process.env.JWT_SECRET, (err, decoded) => {
-            if (err) return res.status(403).json({ message: "Invalid Refresh Token" });
-    
+            if (err)
+                return res
+                    .status(403)
+                    .json({ message: 'Invalid Refresh Token' });
+
             // Tạo Access Token mới
-            const newAccessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    
+            const newAccessToken = jwt.sign(
+                { id: user._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' },
+            );
+
             res.json({ accessToken: newAccessToken });
         });
     }
 
     // /register
     register(req, res, next) {
-            userService.createUser(req.body)
+        userService
+            .createUser(req.body)
             .then((result) => {
-                if (result.status === 'OK'){
+                if (result.status === 'OK') {
                     return res.status(201).json(result);
                 }
-                return res.status(404).json({ message: 'Cannot create user account' });
+                return res
+                    .status(404)
+                    .json({ message: 'Cannot create user account' });
             })
-            .catch(error => {
+            .catch((error) => {
                 return res.status(400).json({ message: error.message });
-            }) 
+            });
     }
 
     // /login
     login(req, res, next) {
-        userService.loginUser(req.body)
-           .then((result) => {
-                if (result.status === 'OK'){
+        userService
+            .loginUser(req.body)
+            .then((result) => {
+                if (result.status === 'OK') {
                     return res.status(200).json(result);
                 }
-                return res.status(401).json({ message: 'Invalid email or password' });
+                return res
+                    .status(401)
+                    .json({ message: 'Invalid email or password' });
             })
-           .catch(error => {
+            .catch((error) => {
                 return res.status(400).json({ message: error.message });
-            })
+            });
     }
 
     logout(req, res, next) {
-        userService.logoutUser(req.body)
-           .then((result) => {
-                if (result.status === 'OK'){
+        userService
+            .logoutUser(req.user)
+            .then((result) => {
+                if (result.status === 'OK') {
                     return res.status(200).json(result);
                 }
-                return res.status(401).json({ message: 'Invalid user or refresh token' });
+                return res
+                    .status(401)
+                    .json({ message: 'Invalid user or refresh token' });
             })
-           .catch(error => {
+            .catch((error) => {
                 return res.status(400).json({ message: error.message });
-            })
+            });
     }
 }
 

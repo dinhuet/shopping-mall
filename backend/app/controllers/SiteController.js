@@ -2,7 +2,6 @@ const Course = require('../models/Product');
 const User = require('../models/User');
 const Product = require('../models/Product');
 
-
 require('dotenv').config(); // Load biến môi trường từ .env
 
 const {
@@ -20,8 +19,6 @@ class SiteController {
             })
             .catch(next);
     }
-
-    
 }
 
 module.exports = new SiteController();
