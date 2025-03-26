@@ -21,38 +21,6 @@ class UserController {
             .catch(next);
     }
 
-    // /refresh-token
-    async refreshToken(req, res, next) {
-        const { refresh_token } = req.body;
-        if (!refresh_token) {
-            return res
-                .status(403)
-                .json({ message: 'Refresh Token is required' });
-        }
-
-        // 🔄 Kiểm tra Refresh Token trong DB
-        const user = await User.findOne({ refresh_token });
-        if (!user) {
-            return res.status(403).json({ message: 'Invalid Refresh Token' });
-        }
-
-        jwt.verify(refresh_token, process.env.JWT_SECRET, (err, decoded) => {
-            if (err)
-                return res
-                    .status(403)
-                    .json({ message: 'Invalid Refresh Token' });
-
-            // Tạo Access Token mới
-            const newAccessToken = jwt.sign(
-                { id: user._id },
-                process.env.JWT_SECRET,
-                { expiresIn: '1h' },
-            );
-
-            res.json({ accessToken: newAccessToken });
-        });
-    }
-
     // /register
     register(req, res, next) {
         userService
