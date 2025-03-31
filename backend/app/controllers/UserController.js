@@ -70,6 +70,34 @@ class UserController {
                 return res.status(400).json({ message: error.message });
             });
     }
+
+    forgotPassword(req, res, next) {
+        userService
+           .forgotPassword(req.body.email)
+            .then((result) => {
+                if (result.status === 'OK') {
+                    return res.status(200).json(result);
+                }
+                return res.status(404).json({ message: 'User not found' });
+            })
+           .catch((error) => {
+                return res.status(400).json({ message: error.message });
+            });
+    }
+
+    resetPassword(req, res, next) {
+        userService
+           .resetPassword(req.body)
+            .then((result) => {
+                if (result.status === 'OK') {
+                    return res.status(200).json(result);
+                }
+                return res.status(404).json({ message: 'User not found' });
+            })
+           .catch((error) => {
+                return res.status(400).json({ message: error.message });
+            });
+    }
 }
 
 module.exports = new UserController();

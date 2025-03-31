@@ -10,6 +10,7 @@ const User = new Schema(
         isAdmin: { type: Boolean, default: false, required: true },
         phone: { type: String, required: true },
         refresh_token: { type: String, required: false },
+        reset_token: { type: String, required: false },
     },
     {
         timestamps: true,

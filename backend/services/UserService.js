@@ -2,6 +2,9 @@ const User = require('../app/models/User');
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require("nodemailer");
+
+require('dotenv').config();
 
 const getUserById = async (userId) => {
     return await User.findById(userId);
@@ -14,6 +17,37 @@ const getUserByEmail = async (email) => {
 const getAllUser = async () => {
     return await User.find({});
 };
+
+const generateResetToken = (userId) => {
+    const resetToken = jwt.sign(
+        { id: userId },
+        process.env.JWT_SECRET,
+        { expiresIn: '15m' },
+    );
+
+    return resetToken;
+}
+
+const sendResetEmail = async (email, token) => {
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
+
+    const resetUrl = `http://localhost:${process.env.port}/user/reset_password?token=${token}`;
+    
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Reset Your Password",
+        html: `<p>Click <a href="${resetUrl}">here</a> to reset your password. This link expires in 15 minutes.</p>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+}
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
@@ -68,6 +102,7 @@ const createUser = (newUser) => {
                 isAdmin,
                 phone,
                 refresh_token: '',
+                reset_token: '',
             });
 
             // create token after have id
@@ -83,7 +118,7 @@ const createUser = (newUser) => {
             );
 
             // update user with token
-            createdUser.refresh_token = refresh_token;
+            createdUser.refresh_token = refresh_token;  
             await createdUser.save();
 
             if (createdUser) {
@@ -176,6 +211,82 @@ const logoutUser = (userLogout) => {
     });
 };
 
+const forgotPassword = (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const user = await User.findOne({ email });
+
+            if (!user) {
+                return resolve({
+                    status: '404',
+                    message: 'User not found',
+                });
+            }
+
+            const resetToken = generateResetToken(user._id);
+
+            await User.findByIdAndUpdate(user._id, { reset_token: resetToken });
+
+            // send email with reset token to user
+            await sendResetEmail(email, resetToken);
+
+            // send response to user
+            return resolve({
+                status: 'OK',
+                message: 'Reset password link has been sent to your email.',
+            });
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+const resetPassword = ({resetToken, newPassword}) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const user = await User.findOne({reset_token: resetToken});
+            if (!user) {
+                console.log("lasdsa");
+                return resolve({
+                    status: '404',
+                    message: 'User not found 1111',
+                });
+            }
+
+            if (!newPassword || newPassword.length < 6) {
+                return resolve({
+                    status: '400',
+                    message: 'Invalid password',
+                });
+            }
+
+            console.log("chya xuong day roi")
+            // const match = await bcrypt.compare(newPassword, user.password);
+            const match = true;
+            if (match) {
+                return resolve({
+                    status: 'OK',
+                    message: 'Password is the same as the old one',
+                });
+            }
+
+            console.log("chya xuong day roif")
+            const hashPassword = await bcrypt.hash(newPassword, 10);
+            await User.findByIdAndUpdate(user._id, {
+                password: hashPassword,
+                reset_token: '',
+            });
+
+            return resolve({
+                status: 'OK',
+                message: 'Password reset successful',
+            });
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
 module.exports = {
     getUserById,
     getAllUser,
@@ -183,4 +294,6 @@ module.exports = {
     createUser,
     loginUser,
     logoutUser,
+    forgotPassword,
+    resetPassword,
 };
