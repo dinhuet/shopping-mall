@@ -2,7 +2,7 @@ const User = require('../app/models/User');
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
 require('dotenv').config();
 
@@ -19,18 +19,16 @@ const getAllUser = async () => {
 };
 
 const generateResetToken = (userId) => {
-    const resetToken = jwt.sign(
-        { id: userId },
-        process.env.JWT_SECRET,
-        { expiresIn: '15m' },
-    );
+    const resetToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+        expiresIn: '15m',
+    });
 
     return resetToken;
-}
+};
 
 const sendResetEmail = async (email, token) => {
     const transporter = nodemailer.createTransport({
-        service: "gmail",
+        service: 'gmail',
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
@@ -38,16 +36,16 @@ const sendResetEmail = async (email, token) => {
     });
 
     const resetUrl = `http://localhost:${process.env.port}/user/reset_password?token=${token}`;
-    
+
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
-        subject: "Reset Your Password",
+        subject: 'Reset Your Password',
         html: `<p>Click <a href="${resetUrl}">here</a> to reset your password. This link expires in 15 minutes.</p>`,
     };
 
     await transporter.sendMail(mailOptions);
-}
+};
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
@@ -57,7 +55,7 @@ const createUser = (newUser) => {
             const existingUser = await User.findOne({ email });
             if (existingUser) {
                 return resolve({
-                    status: 'OK',
+                    status: '409',
                     message: 'The email is already.',
                 });
             }
@@ -78,7 +76,7 @@ const createUser = (newUser) => {
 
             // check password
             if (password !== confirmPassword) {
-                reject(new Error('Passwords do not match'));
+                return reject(new Error('Passwords do not match'));
             }
             if (password.length < 6) {
                 return reject(
@@ -118,7 +116,7 @@ const createUser = (newUser) => {
             );
 
             // update user with token
-            createdUser.refresh_token = refresh_token;  
+            createdUser.refresh_token = refresh_token;
             await createdUser.save();
 
             if (createdUser) {
@@ -238,18 +236,17 @@ const forgotPassword = (email) => {
         } catch (error) {
             reject(error);
         }
-    })
-}
+    });
+};
 
-const resetPassword = ({resetToken, newPassword}) => {
+const resetPassword = ({ resetToken, newPassword }) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const user = await User.findOne({reset_token: resetToken});
+            const user = await User.findOne({ reset_token: resetToken });
             if (!user) {
-                console.log("lasdsa");
                 return resolve({
                     status: '404',
-                    message: 'User not found 1111',
+                    message: 'User not found 1',
                 });
             }
 
@@ -260,17 +257,14 @@ const resetPassword = ({resetToken, newPassword}) => {
                 });
             }
 
-            console.log("chya xuong day roi")
-            // const match = await bcrypt.compare(newPassword, user.password);
-            const match = true;
+            const match = await bcrypt.compare(newPassword, user.password);
             if (match) {
                 return resolve({
-                    status: 'OK',
-                    message: 'Password is the same as the old one',
+                    status: '409',
+                    message: 'Password is same as the old one',
                 });
             }
 
-            console.log("chya xuong day roif")
             const hashPassword = await bcrypt.hash(newPassword, 10);
             await User.findByIdAndUpdate(user._id, {
                 password: hashPassword,
@@ -284,8 +278,8 @@ const resetPassword = ({resetToken, newPassword}) => {
         } catch (error) {
             reject(error);
         }
-    })
-}
+    });
+};
 
 module.exports = {
     getUserById,
