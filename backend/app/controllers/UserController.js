@@ -30,8 +30,8 @@ class UserController {
                     return res.status(201).json(result);
                 }
                 return res
-                    .status(404)
-                    .json({ message: 'Cannot create user account' });
+                    .status(result.status)
+                    .json({ message: result.message });
             })
             .catch((error) => {
                 return res.status(400).json({ message: error.message });
@@ -47,8 +47,8 @@ class UserController {
                     return res.status(200).json(result);
                 }
                 return res
-                    .status(401)
-                    .json({ message: 'Invalid email or password' });
+                    .status(result.status)
+                    .json({ message: result.message });
             })
             .catch((error) => {
                 return res.status(400).json({ message: error.message });
@@ -63,8 +63,8 @@ class UserController {
                     return res.status(200).json(result);
                 }
                 return res
-                    .status(401)
-                    .json({ message: 'Invalid user or refresh token' });
+                    .status(result.status)
+                    .json({ message: result.message });
             })
             .catch((error) => {
                 return res.status(400).json({ message: error.message });
@@ -73,28 +73,32 @@ class UserController {
 
     forgotPassword(req, res, next) {
         userService
-           .forgotPassword(req.body.email)
+            .forgotPassword(req.body.email)
             .then((result) => {
                 if (result.status === 'OK') {
                     return res.status(200).json(result);
                 }
-                return res.status(404).json({ message: 'User not found' });
+                return res
+                    .status(result.status)
+                    .json({ message: result.message });
             })
-           .catch((error) => {
+            .catch((error) => {
                 return res.status(400).json({ message: error.message });
             });
     }
 
     resetPassword(req, res, next) {
         userService
-           .resetPassword(req.body)
+            .resetPassword(req.body)
             .then((result) => {
                 if (result.status === 'OK') {
                     return res.status(200).json(result);
                 }
-                return res.status(404).json({ message: 'User not found' });
+                return res
+                    .status(result.status)
+                    .json({ message: result.message });
             })
-           .catch((error) => {
+            .catch((error) => {
                 return res.status(400).json({ message: error.message });
             });
     }
