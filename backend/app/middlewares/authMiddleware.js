@@ -2,13 +2,18 @@ const jwt = require('jsonwebtoken');
 const userService = require('../../services/UserService');
 const User = require('../models/User');
 
+const {
+    mongooseToObject,
+    muiltipleMongooseToObject,
+} = require('../../utils/mongoose');
+
 class AuthMiddleWare {
     // check refreshToken
     async verifyToken(req, res, next) {
         try {
             const token =
                 req.body.refresh_token ||
-                req.headers.authorization?.aplit(' ')[1];
+                req.headers.authorization?.split(' ')[1];
             if (!token) {
                 return res.status(401).json({ message: 'Token not provided' });
             }
@@ -17,7 +22,7 @@ class AuthMiddleWare {
                 if (err) {
                     return res.status(403).json({ message: 'Invalid token' });
                 }
-                req.user = decoded; //
+                req.user = decoded;
                 next();
             });
         } catch (error) {
@@ -56,6 +61,15 @@ class AuthMiddleWare {
 
             res.json({ accessToken: newAccessToken });
         });
+    }
+
+    // check admin
+    async verifyAdmin(req, res, next) {
+        const user = await User.findOne({ _id: req.user.id });
+        if (!user || !user.isAdmin) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        next();
     }
 }
 

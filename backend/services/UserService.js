@@ -47,6 +47,7 @@ const sendResetEmail = async (email, token) => {
     await transporter.sendMail(mailOptions);
 };
 
+// create user service
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
         const { name, email, password, isAdmin, confirmPassword, phone } =
@@ -133,6 +134,7 @@ const createUser = (newUser) => {
     });
 };
 
+// login service
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -185,6 +187,7 @@ const loginUser = (userLogin) => {
     });
 };
 
+// logout service
 const logoutUser = (userLogout) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -209,6 +212,7 @@ const logoutUser = (userLogout) => {
     });
 };
 
+// forgot password service
 const forgotPassword = (email) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -239,6 +243,7 @@ const forgotPassword = (email) => {
     });
 };
 
+// reset password service
 const resetPassword = ({ resetToken, newPassword }) => {
     return new Promise(async (resolve, reject) => {
         try {
