@@ -2,16 +2,68 @@ const Product = require('../app/models/Product');
 
 require('dotenv').config();
 
+// get product by id service
 const getProductById = async (productId) => {
     return await Product.findById(productId);
 };
 
+// get all product service
 const getAllProduct = async () => {
     return await Product.find({});
+};
+
+// create product service
+const createProduct = (product) => {
+    return new Promise(async (resolve, reject) => {
+        const { name, price, countInStock, type, description, image, rating } =
+            product;
+
+        try {
+            if (
+                !name ||
+                !price ||
+                !countInStock ||
+                !type ||
+                !description ||
+                !image
+            ) {
+                return resolve({
+                    status: 400,
+                    message: 'Missing required fields',
+                });
+            }
+
+            const existingProduct = await Product.findOne({ name });
+            if (existingProduct) {
+                return resolve({
+                    status: 409,
+                    message: 'The product is already.',
+                });
+            }
+
+            const createdProduct = await Product.create({
+                name,
+                price,
+                countInStock,
+                type,
+                description,
+                image,
+                rating: '',
+            });
+
+            return resolve({
+                status: 'OK',
+                message: 'Product created successfully',
+                data: createdProduct,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
 };
 
 module.exports = {
     getProductById,
     getAllProduct,
- };
-
+    createProduct,
+};

@@ -10,6 +10,7 @@ const {
 } = require('../../utils/mongoose');
 
 class UserController {
+    // get profile
     getUserProfile(req, res, next) {
         userService
             .getAllUser()
@@ -55,6 +56,7 @@ class UserController {
             });
     }
 
+    // logout
     logout(req, res, next) {
         userService
             .logoutUser(req.user)
@@ -71,6 +73,7 @@ class UserController {
             });
     }
 
+    // forgot password
     forgotPassword(req, res, next) {
         userService
             .forgotPassword(req.body.email)
@@ -87,6 +90,7 @@ class UserController {
             });
     }
 
+    // reset password
     resetPassword(req, res, next) {
         userService
             .resetPassword(req.body)
