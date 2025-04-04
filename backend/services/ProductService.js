@@ -68,7 +68,7 @@ const updateProduct = (productId, detail) => {
             const updatedProduct = await Product.findByIdAndUpdate(
                 productId,
                 detail,
-                { new: true }
+                { new: true },
             );
 
             if (!updatedProduct) {
@@ -86,8 +86,8 @@ const updateProduct = (productId, detail) => {
         } catch (error) {
             reject(error);
         }
-    })
-}
+    });
+};
 
 /**
  * delete product.
@@ -112,7 +112,7 @@ const deleteProduct = (productId) => {
             reject(error);
         }
     });
-}
+};
 
 module.exports = {
     getProductById,

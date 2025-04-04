@@ -1,9 +1,6 @@
 const Product = require('../models/Product');
 const productService = require('../../services/ProductService');
 
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-
 const {
     mongooseToObject,
     muiltipleMongooseToObject,
@@ -50,14 +47,14 @@ class ProductController {
     // update product by id
     updateProduct(req, res, next) {
         productService
-           .updateProduct(req.params.id, req.body)
-           .then((product) => {
+            .updateProduct(req.params.id, req.body)
+            .then((product) => {
                 if (product.status === 'OK') {
                     return res.status(200).json(product);
                 }
                 return res.status(product.status).json(product.message);
             })
-           .catch(next);
+            .catch(next);
     }
 
     /**
@@ -65,14 +62,14 @@ class ProductController {
      */
     deleteProduct(req, res, next) {
         productService
-           .deleteProduct(req.params.id)
-           .then((product) => {
+            .deleteProduct(req.params.id)
+            .then((product) => {
                 if (product.status === 'OK') {
                     return res.status(200).json(product);
                 }
                 return res.status(product.status).json(product.message);
             })
-           .catch(next);
+            .catch(next);
     }
 }
 
