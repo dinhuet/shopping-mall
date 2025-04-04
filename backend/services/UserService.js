@@ -286,6 +286,43 @@ const resetPassword = ({ resetToken, newPassword }) => {
     });
 };
 
+// update profile service
+// const updateProfile = ( userId, details ) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             // const user = getUserById(userId);
+
+//             // if (!user) {
+//             //     return resolve({
+//             //         status: 404,
+//             //         message: 'User not found',
+//             //     });
+//             // }
+
+//             const updatedUser = await User.findByIdAndUpdate(
+//                 userId,
+//                 { $set: details }, // Chỉ cập nhật các trường mới
+//             { new: true } // Trả về user sau khi update
+//             );
+
+//             if (!updatedUser) {
+//                 return resolve({
+//                     status: 404,
+//                     message: 'Failed to update user',
+//                 });
+//             }
+
+//             return resolve({
+//                 status: 'OK',
+//                 message: 'User profile updated successfully',
+//                 user: updatedUser,
+//             });
+//         } catch (error) {
+//             reject(error);
+//         }
+//     });
+// };
+
 module.exports = {
     getUserById,
     getAllUser,
@@ -295,4 +332,5 @@ module.exports = {
     logoutUser,
     forgotPassword,
     resetPassword,
+    // updateProfile,
 };

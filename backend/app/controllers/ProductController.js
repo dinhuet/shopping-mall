@@ -46,6 +46,19 @@ class ProductController {
             })
             .catch(next);
     }
+
+    // update product by id
+    updateProduct(req, res, next) {
+        productService
+           .updateProduct(req.params.id, req.body)
+           .then((product) => {
+                if (product.status === 'OK') {
+                    return res.status(200).json(product);
+                }
+                return res.status(product.status).json(product.message);
+            })
+           .catch(next);
+    }
 }
 
 module.exports = new ProductController();

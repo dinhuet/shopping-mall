@@ -62,8 +62,35 @@ const createProduct = (product) => {
     });
 };
 
+const updateProduct = (productId, detail) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedProduct = await Product.findByIdAndUpdate(
+                productId,
+                detail,
+                { new: true }
+            );
+
+            if (!updatedProduct) {
+                return resolve({
+                    status: 404,
+                    message: 'Product not found',
+                });
+            }
+
+            return resolve({
+                status: 'OK',
+                message: 'Product updated successfully',
+                data: updatedProduct,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 module.exports = {
     getProductById,
     getAllProduct,
     createProduct,
+    updateProduct,
 };
