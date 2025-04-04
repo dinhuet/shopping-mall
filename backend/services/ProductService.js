@@ -2,17 +2,29 @@ const Product = require('../app/models/Product');
 
 require('dotenv').config();
 
-// get product by id service
+/**
+ * get product by id service.
+ * @param {String} productId - ID sản phẩm
+ * @returns 
+ */
 const getProductById = async (productId) => {
     return await Product.findById(productId);
 };
 
-// get all product service
+
+/**
+ * get all product service.
+ * @returns 
+ */
 const getAllProduct = async () => {
     return await Product.find({});
 };
 
-// create product service
+/**
+ * create product service.
+ * @param {Object} product - Thông tin khởi tạo sản phẩm { name, price, countInStock, type, description, image, rating }.
+ * @returns 
+ */
 const createProduct = (product) => {
     return new Promise(async (resolve, reject) => {
         const { name, price, countInStock, type, description, image, rating } =
@@ -61,7 +73,14 @@ const createProduct = (product) => {
         }
     });
 };
-// update product service
+
+
+/**
+ * update product service.
+ * @param {String} productId - ID sản phẩm
+ * @param {Object} detail - Chi tiết cập nhật sản phẩm
+ * @returns 
+ */
 const updateProduct = (productId, detail) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -90,7 +109,9 @@ const updateProduct = (productId, detail) => {
 };
 
 /**
- * delete product.
+ * delete product service.
+ * @param {String} productId - ID sản phẩm
+ * @returns
  */
 const deleteProduct = (productId) => {
     return new Promise(async (resolve, reject) => {

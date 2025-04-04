@@ -14,7 +14,19 @@ class CartController {
                 if (cart.status === 'OK') {
                     return res.status(200).json(cart);
                 }
-                return res.status(404).json('cannot do that work');
+                return res.status(cart.status).json(cart.message);
+            })
+            .catch(next);
+    }
+
+    updateCart(req, res, next) {
+        cartService
+            .updateCart(req.user.id, req.body)
+            .then((cart) => {
+                if (cart.status === 'OK') {
+                    return res.status(200).json(cart);
+                }
+                return res.status(cart.status).json(cart.message);
             })
             .catch(next);
     }

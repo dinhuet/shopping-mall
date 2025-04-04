@@ -4,9 +4,19 @@ const mongoose = require('mongoose');
 
 require('dotenv').config();
 
-const addToCart = (userId, cart) => {
+const getCartById = async (userId) => {
+    return await Cart.findById(userId);
+};
+
+/**
+ * add items to cart.
+ * @param {String} userId - ID người dùng
+ * @param {Object} item - Thông tin sản phẩm { productId, quantity }
+ * @returns {Promise<Object>} - Giỏ hàng đã được cập nhật.
+ */
+const addToCart = (userId, item) => {
     return new Promise(async (resolve, reject) => {
-        const { productId, quantity } = cart;
+        const { productId, quantity } = item;
         try {
             const product = await productService.getProductById(productId);
             if (!product) {
@@ -30,8 +40,7 @@ const addToCart = (userId, cart) => {
                 if (existingItem) {
                     existingItem.quantity += quantity;
 
-                    cart.totalPrice += (product.price * quantity);
-
+                    cart.totalPrice += product.price * quantity;
                 } else {
                     cart.items.push({ productId, quantity });
                     cart.totalPrice += product.price * quantity;
@@ -50,6 +59,60 @@ const addToCart = (userId, cart) => {
     });
 };
 
+/**
+ * update items in cart.
+ * @param {String} userId - ID người dùng
+ * @param {Object} item - Thông tin sản phẩm { productId, quantity }
+ * @returns {Promise<Object>} - Giỏ hàng đã được cập nhật.
+ */
+const updateCart = (userId, item) => {
+    return new Promise(async (resolve, reject) => {
+        const { productId, quantity } = item;
+        try {
+            const cart = await Cart.findOneAndUpdate(
+                { userId },
+                { $set: { 'items.$[item].quantity': quantity } },
+                {
+                    new: true,
+                    arrayFilters: [{ 'item.productId': productId }],
+                },
+            );
+
+            if (!cart) {
+                return resolve({
+                    status: 404,
+                    message: 'Cart not found',
+                });
+            }
+
+            cart.totalPrice = 0;
+            cart.items.forEach(async (item) => {
+                let product = await productService.getProductById(
+                    item.productId,
+                );
+                if (!product) {
+                    return resolve({
+                        status: 404,
+                        message: 'Product not found',
+                    });
+                }
+                cart.totalPrice += item.quantity * product.price;
+            });
+
+            await cart.save();
+            return resolve({
+                status: 'OK',
+                message: 'Cart updated successfully',
+                data: cart,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     addToCart,
+    updateCart,
+    getCartById,
 };
