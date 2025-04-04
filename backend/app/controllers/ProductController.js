@@ -7,7 +7,12 @@ const {
 } = require('../../utils/mongoose');
 
 class ProductController {
-    // get all products
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @param {*} next 
+     */
     getListproduct(req, res, next) {
         productService
             .getAllProduct()

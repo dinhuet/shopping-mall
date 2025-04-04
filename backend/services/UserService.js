@@ -18,6 +18,11 @@ const getAllUser = async () => {
     return await User.find({});
 };
 
+/**
+ * Tạo resetToken.
+ * @param {String} userId - ID người dùng.
+ * @returns 
+ */
 const generateResetToken = (userId) => {
     const resetToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
         expiresIn: '15m',
@@ -26,6 +31,12 @@ const generateResetToken = (userId) => {
     return resetToken;
 };
 
+
+/**
+ * Gửi email reset password.
+ * @param {String} email - Email người dùng.
+ * @param {String} token - Token để reset mật khẩu.
+*/
 const sendResetEmail = async (email, token) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -47,7 +58,11 @@ const sendResetEmail = async (email, token) => {
     await transporter.sendMail(mailOptions);
 };
 
-// create user service
+/**
+ * Tạo người dùng mới.
+ * @param {Object} newUser - { name, email, password, isAdmin, confirmPassword, phone }
+ * @returns 
+ */
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
         const { name, email, password, isAdmin, confirmPassword, phone } =
@@ -134,7 +149,11 @@ const createUser = (newUser) => {
     });
 };
 
-// login service
+/**
+ * Login.
+ * @param {Object} userLogin - { email, password }
+ * @returns 
+ */
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -187,7 +206,11 @@ const loginUser = (userLogin) => {
     });
 };
 
-// logout service
+/**
+ * Logout.
+ * @param {Object} userLogout - Lấy từ req.user
+ * @returns 
+ */
 const logoutUser = (userLogout) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -212,7 +235,11 @@ const logoutUser = (userLogout) => {
     });
 };
 
-// forgot password service
+/**
+ * Nhận link để reset mật khẩu.
+ * @param {String} email 
+ * @returns 
+ */
 const forgotPassword = (email) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -243,7 +270,11 @@ const forgotPassword = (email) => {
     });
 };
 
-// reset password service
+/**
+ * Reset mật khẩu.
+ * @param {Object} - { resetToken, newPassword }
+ * @returns 
+ */
 const resetPassword = ({ resetToken, newPassword }) => {
     return new Promise(async (resolve, reject) => {
         try {
