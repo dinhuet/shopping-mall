@@ -10,7 +10,12 @@ const {
 } = require('../../utils/mongoose');
 
 class UserController {
-    // get profile
+    /**
+     * Get user profile.
+     * @param {*} req 
+     * @param {*} res 
+     * @param {*} next 
+     */
     getUserProfile(req, res, next) {
         userService
             .getAllUser()
@@ -22,7 +27,13 @@ class UserController {
             .catch(next);
     }
 
-    // /register
+    
+    /**
+     * Register.
+     * @param {Object} req - Truyền vào req.body thông tin đăng ký { name, email, password, isAdmin, confirmPassword, phone }
+     * @param {*} res 
+     * @param {*} next 
+     */
     register(req, res, next) {
         userService
             .createUser(req.body)
@@ -39,7 +50,12 @@ class UserController {
             });
     }
 
-    // /login
+    /**
+     * Login.
+     * @param {Object} req - Truyền vào req.body { email, password }
+     * @param {*} res 
+     * @param {*} next 
+     */
     login(req, res, next) {
         userService
             .loginUser(req.body)
@@ -56,7 +72,12 @@ class UserController {
             });
     }
 
-    // logout
+    /**
+     * Logout.
+     * @param {Object} req - req.user lấy dữ liệu user từ middleware.
+     * @param {*} res 
+     * @param {*} next 
+     */
     logout(req, res, next) {
         userService
             .logoutUser(req.user)
@@ -73,7 +94,12 @@ class UserController {
             });
     }
 
-    // forgot password
+    /**
+     * Forgot password.
+     * @param {String} req - Truyền vào req.body email
+     * @param {*} res 
+     * @param {*} next 
+     */
     forgotPassword(req, res, next) {
         userService
             .forgotPassword(req.body.email)
@@ -90,7 +116,12 @@ class UserController {
             });
     }
 
-    // reset password
+    /**
+     * Create new password.
+     * @param {Object} req - Truyền vào req.body { resetToken, newPassword }
+     * @param {*} res 
+     * @param {*} next 
+     */
     resetPassword(req, res, next) {
         userService
             .resetPassword(req.body)

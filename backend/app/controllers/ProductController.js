@@ -8,7 +8,7 @@ const {
 
 class ProductController {
     /**
-     * 
+     * Get list of products.
      * @param {*} req 
      * @param {*} res 
      * @param {*} next 
@@ -22,7 +22,12 @@ class ProductController {
             .catch(next);
     }
 
-    // get product by id
+    /**
+     * Get product detail by id.
+     * @param {*} req - Lấy id từ params.
+     * @param {*} res 
+     * @param {*} next 
+     */
     getProductDetail(req, res, next) {
         productService
             .getProductById(req.params.id)
@@ -36,7 +41,12 @@ class ProductController {
             .catch(next);
     }
 
-    // create product
+    /**
+     * Create new product.
+     * @param {*} req - Truyền vào req.body thông tin khởi tạo { name, price, countInStock, type, description, image, rating }
+     * @param {*} res 
+     * @param {*} next 
+     */
     createProduct(req, res, next) {
         productService
             .createProduct(req.body)
@@ -50,6 +60,12 @@ class ProductController {
     }
 
     // update product by id
+    /**
+     * update product by id.
+     * @param {*} req - Truyền vào req.body thông tin mới.
+     * @param {*} res 
+     * @param {*} next 
+     */
     updateProduct(req, res, next) {
         productService
             .updateProduct(req.params.id, req.body)
@@ -63,7 +79,10 @@ class ProductController {
     }
 
     /**
-     * delete product.
+     * delete product by id.
+     * @param {*} req 
+     * @param {*} res 
+     * @param {*} next 
      */
     deleteProduct(req, res, next) {
         productService
