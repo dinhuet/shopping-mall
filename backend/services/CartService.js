@@ -86,18 +86,10 @@ const updateCart = (userId, item) => {
             }
 
             cart.totalPrice = 0;
-            cart.items.forEach(async (item) => {
-                let product = await productService.getProductById(
-                    item.productId,
-                );
-                if (!product) {
-                    return resolve({
-                        status: 404,
-                        message: 'Product not found',
-                    });
-                }
+            for (const item of cart.items) {
+                let product = await productService.getProductById(item.productId);
                 cart.totalPrice += item.quantity * product.price;
-            });
+            };
 
             await cart.save();
             return resolve({
@@ -111,8 +103,49 @@ const updateCart = (userId, item) => {
     });
 };
 
+/**
+ * remove items from cart.
+ * @param {String} userId - ID người dùng
+ * @param {String} productId - ID sản phẩm
+*/
+const removeFromCart = (userId, productId) => {
+    return new Promise (async (resolve, reject) => {
+        try {
+            
+            const cart = await Cart.findOneAndUpdate(
+                { userId },
+                { $pull: { items: { productId } } },
+                { new: true },
+            );
+
+            if (!cart) {
+                return resolve({
+                    status: 404,
+                    message: 'Cart not found',
+                });
+            }
+
+            cart.totalPrice = 0;
+            for (const item of cart.items) {
+                let product = await productService.getProductById(item.productId);
+                cart.totalPrice += item.quantity * product.price;
+            }
+
+            await cart.save();
+            return resolve({
+                status: 'OK',
+                message: 'Cart removed successfully',
+                data: cart,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
 module.exports = {
     addToCart,
     updateCart,
     getCartById,
+    removeFromCart,
 };
