@@ -1,0 +1,16 @@
+const Cart = require('../models/Cart');
+const cartService = require('../../services/CartService');
+
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const {
+    mongooseToObject,
+    muiltipleMongooseToObject,
+} = require('../../utils/mongoose');
+
+class CartController {
+
+}
+
+module.exports = new CartController();

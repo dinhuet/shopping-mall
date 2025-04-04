@@ -61,7 +61,7 @@ const createProduct = (product) => {
         }
     });
 };
-
+// update product service
 const updateProduct = (productId, detail) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -88,9 +88,36 @@ const updateProduct = (productId, detail) => {
         }
     })
 }
+
+/**
+ * delete product.
+ */
+const deleteProduct = (productId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const deletedProduct = await Product.findByIdAndDelete(productId);
+
+            if (!deletedProduct) {
+                return resolve({
+                    status: 404,
+                    message: 'Product not found',
+                });
+            }
+
+            return resolve({
+                status: 'OK',
+                message: 'Product deleted successfully',
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 module.exports = {
     getProductById,
     getAllProduct,
     createProduct,
     updateProduct,
+    deleteProduct,
 };

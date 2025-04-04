@@ -59,6 +59,21 @@ class ProductController {
             })
            .catch(next);
     }
+
+    /**
+     * delete product.
+     */
+    deleteProduct(req, res, next) {
+        productService
+           .deleteProduct(req.params.id)
+           .then((product) => {
+                if (product.status === 'OK') {
+                    return res.status(200).json(product);
+                }
+                return res.status(product.status).json(product.message);
+            })
+           .catch(next);
+    }
 }
 
 module.exports = new ProductController();
