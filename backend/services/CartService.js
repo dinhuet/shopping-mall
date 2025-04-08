@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const getCartById = async (userId) => {
-    return await Cart.findById(userId);
+    return await Cart.find({ userId });
 };
 
 /**
@@ -87,9 +87,11 @@ const updateCart = (userId, item) => {
 
             cart.totalPrice = 0;
             for (const item of cart.items) {
-                let product = await productService.getProductById(item.productId);
+                let product = await productService.getProductById(
+                    item.productId,
+                );
                 cart.totalPrice += item.quantity * product.price;
-            };
+            }
 
             await cart.save();
             return resolve({
@@ -107,11 +109,10 @@ const updateCart = (userId, item) => {
  * remove items from cart.
  * @param {String} userId - ID người dùng
  * @param {String} productId - ID sản phẩm
-*/
+ */
 const removeFromCart = (userId, productId) => {
-    return new Promise (async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
-            
             const cart = await Cart.findOneAndUpdate(
                 { userId },
                 { $pull: { items: { productId } } },
@@ -127,7 +128,9 @@ const removeFromCart = (userId, productId) => {
 
             cart.totalPrice = 0;
             for (const item of cart.items) {
-                let product = await productService.getProductById(item.productId);
+                let product = await productService.getProductById(
+                    item.productId,
+                );
                 cart.totalPrice += item.quantity * product.price;
             }
 
@@ -140,8 +143,8 @@ const removeFromCart = (userId, productId) => {
         } catch (error) {
             reject(error);
         }
-    })
-}
+    });
+};
 
 module.exports = {
     addToCart,

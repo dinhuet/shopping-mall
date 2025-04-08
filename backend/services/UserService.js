@@ -21,7 +21,7 @@ const getAllUser = async () => {
 /**
  * Tạo resetToken.
  * @param {String} userId - ID người dùng.
- * @returns 
+ * @returns
  */
 const generateResetToken = (userId) => {
     const resetToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -31,12 +31,11 @@ const generateResetToken = (userId) => {
     return resetToken;
 };
 
-
 /**
  * Gửi email reset password.
  * @param {String} email - Email người dùng.
  * @param {String} token - Token để reset mật khẩu.
-*/
+ */
 const sendResetEmail = async (email, token) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -61,7 +60,7 @@ const sendResetEmail = async (email, token) => {
 /**
  * Tạo người dùng mới.
  * @param {Object} newUser - { name, email, password, isAdmin, confirmPassword, phone }
- * @returns 
+ * @returns
  */
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
@@ -152,7 +151,7 @@ const createUser = (newUser) => {
 /**
  * Login.
  * @param {Object} userLogin - { email, password }
- * @returns 
+ * @returns
  */
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
@@ -209,7 +208,7 @@ const loginUser = (userLogin) => {
 /**
  * Logout.
  * @param {Object} userLogout - Lấy từ req.user
- * @returns 
+ * @returns
  */
 const logoutUser = (userLogout) => {
     return new Promise(async (resolve, reject) => {
@@ -237,8 +236,8 @@ const logoutUser = (userLogout) => {
 
 /**
  * Nhận link để reset mật khẩu.
- * @param {String} email 
- * @returns 
+ * @param {String} email
+ * @returns
  */
 const forgotPassword = (email) => {
     return new Promise(async (resolve, reject) => {
@@ -273,7 +272,7 @@ const forgotPassword = (email) => {
 /**
  * Reset mật khẩu.
  * @param {Object} - { resetToken, newPassword }
- * @returns 
+ * @returns
  */
 const resetPassword = ({ resetToken, newPassword }) => {
     return new Promise(async (resolve, reject) => {

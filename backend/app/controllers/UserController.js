@@ -12,9 +12,9 @@ const {
 class UserController {
     /**
      * Get user profile.
-     * @param {*} req 
-     * @param {*} res 
-     * @param {*} next 
+     * @param {*} req
+     * @param {*} res
+     * @param {*} next
      */
     getUserProfile(req, res, next) {
         userService
@@ -27,12 +27,11 @@ class UserController {
             .catch(next);
     }
 
-    
     /**
      * Register.
      * @param {Object} req - Truyền vào req.body thông tin đăng ký { name, email, password, isAdmin, confirmPassword, phone }
-     * @param {*} res 
-     * @param {*} next 
+     * @param {*} res
+     * @param {*} next
      */
     register(req, res, next) {
         userService
@@ -53,8 +52,8 @@ class UserController {
     /**
      * Login.
      * @param {Object} req - Truyền vào req.body { email, password }
-     * @param {*} res 
-     * @param {*} next 
+     * @param {*} res
+     * @param {*} next
      */
     login(req, res, next) {
         userService
@@ -75,8 +74,8 @@ class UserController {
     /**
      * Logout.
      * @param {Object} req - req.user lấy dữ liệu user từ middleware.
-     * @param {*} res 
-     * @param {*} next 
+     * @param {*} res
+     * @param {*} next
      */
     logout(req, res, next) {
         userService
@@ -97,8 +96,8 @@ class UserController {
     /**
      * Forgot password.
      * @param {String} req - Truyền vào req.body email
-     * @param {*} res 
-     * @param {*} next 
+     * @param {*} res
+     * @param {*} next
      */
     forgotPassword(req, res, next) {
         userService
@@ -119,8 +118,8 @@ class UserController {
     /**
      * Create new password.
      * @param {Object} req - Truyền vào req.body { resetToken, newPassword }
-     * @param {*} res 
-     * @param {*} next 
+     * @param {*} res
+     * @param {*} next
      */
     resetPassword(req, res, next) {
         userService
