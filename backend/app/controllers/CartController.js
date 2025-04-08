@@ -7,14 +7,22 @@ const {
 } = require('../../utils/mongoose');
 
 class CartController {
+    getCart(req, res, next) {
+        cartService
+            .getCartById(req.user.id)
+            .then((items) => {
+                res.status(200).json(muiltipleMongooseToObject(items));
+            })
+            .catch(next);
+    }
 
     /**
      * Add product to cart.
-     * @param {*} req 
+     * @param {*} req
      * - Lấy dữ liệu req.user thông qua middleware.
      * - Truyền vào req.body thông tin sản phẩm { productId, quantity }
-     * @param {*} res 
-     * @param {*} next 
+     * @param {*} res
+     * @param {*} next
      */
     addToCart(req, res, next) {
         cartService
@@ -30,11 +38,11 @@ class CartController {
 
     /**
      * Update product in cart.
-     * @param {*} req 
+     * @param {*} req
      * - Lấy dữ liệu req.user thông qua middleware.
      * - Truyền vào req.body thông tin sản phẩm { productId, quantity }
-     * @param {*} res 
-     * @param {*} next 
+     * @param {*} res
+     * @param {*} next
      */
     updateCart(req, res, next) {
         cartService
@@ -50,7 +58,7 @@ class CartController {
 
     /**
      * Remove product from cart.
-     * @param {*} req 
+     * @param {*} req
      * - Lấy dữ liệu req.user thông qua middleware.
      * - Truyền vào req.params.productId
      */
@@ -63,7 +71,7 @@ class CartController {
                 }
                 return res.status(cart.status).json(cart.message);
             })
-           .catch(next);
+            .catch(next);
     }
 }
 

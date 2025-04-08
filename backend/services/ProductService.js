@@ -5,16 +5,15 @@ require('dotenv').config();
 /**
  * get product by id service.
  * @param {String} productId - ID sản phẩm
- * @returns 
+ * @returns
  */
 const getProductById = async (productId) => {
     return await Product.findById(productId);
 };
 
-
 /**
  * get all product service.
- * @returns 
+ * @returns
  */
 const getAllProduct = async () => {
     return await Product.find({});
@@ -23,7 +22,7 @@ const getAllProduct = async () => {
 /**
  * create product service.
  * @param {Object} product - Thông tin khởi tạo sản phẩm { name, price, countInStock, type, description, image, rating }.
- * @returns 
+ * @returns
  */
 const createProduct = (product) => {
     return new Promise(async (resolve, reject) => {
@@ -74,12 +73,11 @@ const createProduct = (product) => {
     });
 };
 
-
 /**
  * update product service.
  * @param {String} productId - ID sản phẩm
  * @param {Object} detail - Chi tiết cập nhật sản phẩm
- * @returns 
+ * @returns
  */
 const updateProduct = (productId, detail) => {
     return new Promise(async (resolve, reject) => {
