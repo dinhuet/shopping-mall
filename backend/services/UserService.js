@@ -70,7 +70,7 @@ const createUser = (newUser) => {
             const existingUser = await User.findOne({ email });
             if (existingUser) {
                 return resolve({
-                    status: '409',
+                    status: 409,
                     message: 'The email is already.',
                 });
             }
@@ -84,7 +84,7 @@ const createUser = (newUser) => {
                 isAdmin === undefined
             ) {
                 return resolve({
-                    status: '400',
+                    status: 400,
                     message: 'Missing required fields',
                 });
             }
@@ -159,7 +159,7 @@ const loginUser = (userLogin) => {
             const { email, password } = userLogin;
             if (!email || !password) {
                 return resolve({
-                    status: '400',
+                    status: 400,
                     message: 'Missing required fields',
                 });
             }
@@ -168,14 +168,14 @@ const loginUser = (userLogin) => {
 
             if (!user) {
                 return resolve({
-                    status: '404',
+                    status: 404,
                     message: 'User not found',
                 });
             }
             // check password
             if (!bcrypt.compareSync(password, user.password)) {
                 return resolve({
-                    status: '401',
+                    status: 401,
                     message: 'Invalid password',
                 });
             } else {
@@ -217,7 +217,7 @@ const logoutUser = (userLogout) => {
 
             if (!user) {
                 return resolve({
-                    status: '404',
+                    status: 404,
                     message: 'User not found',
                 });
             }
@@ -246,7 +246,7 @@ const forgotPassword = (email) => {
 
             if (!user) {
                 return resolve({
-                    status: '404',
+                    status: 404,
                     message: 'User not found',
                 });
             }
@@ -271,31 +271,38 @@ const forgotPassword = (email) => {
 
 /**
  * Reset mật khẩu.
- * @param {Object} - { resetToken, newPassword }
+ * @param {Object} - { resetToken, newPassword, consfirmPassword }
  * @returns
  */
-const resetPassword = ({ resetToken, newPassword }) => {
+const resetPassword = ({ resetToken, newPassword, confirmPassword }) => {
     return new Promise(async (resolve, reject) => {
         try {
             const user = await User.findOne({ reset_token: resetToken });
             if (!user) {
                 return resolve({
-                    status: '404',
-                    message: 'User not found 1',
+                    status: 404,
+                    message: 'User not found',
                 });
             }
 
             if (!newPassword || newPassword.length < 6) {
                 return resolve({
-                    status: '400',
+                    status: 400,
                     message: 'Invalid password',
                 });
+            }
+
+            if (newPassword !== confirmPassword) {
+                return resolve({
+                    status: 400,
+                    message: "Password do not match",
+                })
             }
 
             const match = await bcrypt.compare(newPassword, user.password);
             if (match) {
                 return resolve({
-                    status: '409',
+                    status: 409,
                     message: 'Password is same as the old one',
                 });
             }
@@ -316,12 +323,17 @@ const resetPassword = ({ resetToken, newPassword }) => {
     });
 };
 
-
+/**
+ * Update profile.
+ * @param {Object} user - req.user
+ * @param {Object} details - {name, password, phone}
+ * @returns 
+ */
 const updateProfile = (user, details ) => {
     return new Promise(async (resolve, reject) => {
         try {
             const userId = user.id;
-            
+
             const updatedUser = await User.findByIdAndUpdate(
                 userId,
                 { $set: details }, // Chỉ cập nhật các trường mới

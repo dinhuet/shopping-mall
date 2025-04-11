@@ -117,7 +117,7 @@ class UserController {
 
     /**
      * Create new password.
-     * @param {Object} req - Truyền vào req.body { resetToken, newPassword }
+     * @param {Object} req - Truyền vào req.body { resetToken, newPassword, confirmPassword }
      * @param {*} res
      * @param {*} next
      */
@@ -137,7 +137,13 @@ class UserController {
             });
     }
 
-    
+    /**
+     * Update profile.
+     * @param {*} req - Truyền vào req.body {name, password, confirmPassword, phone}
+     * - req.user: lấy từ middleWare verifyToken
+     * @param {*} res 
+     * @param {*} next 
+     */
     updateProfile(req, res, next) {
         userService
             .updateProfile(req.user, req.body)
