@@ -8,7 +8,7 @@ const {
 } = require('../../utils/mongoose');
 
 class AuthMiddleWare {
-    // check refreshToken
+    // check accesstoken
     async verifyToken(req, res, next) {
         try {
             const token =
@@ -23,6 +23,7 @@ class AuthMiddleWare {
                     return res.status(403).json({ message: 'Invalid token' });
                 }
                 req.user = decoded;
+                console.log(req.user);
                 next();
             });
         } catch (error) {
