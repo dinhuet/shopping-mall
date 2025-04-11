@@ -137,22 +137,22 @@ class UserController {
             });
     }
 
-    // update profile
-    // updateProfile(req, res, next) {
-    //     userService
-    //         .updateProfile(req.user.id, req.body)
-    //         .then((result) => {
-    //             if (result.status === 'OK') {
-    //                 return res.status(200).json(result);
-    //             }
-    //             return res
-    //                .status(result.status)
-    //                .json({ message: result.message });
-    //         })
-    //        .catch((error) => {
-    //             return res.status(400).json({ message: error.message });
-    //         });
-    // }
+    
+    updateProfile(req, res, next) {
+        userService
+            .updateProfile(req.user, req.body)
+            .then((result) => {
+                if (result.status === 'OK') {
+                    return res.status(200).json(result);
+                }
+                return res
+                   .status(result.status)
+                   .json({ message: result.message });
+            })
+           .catch((error) => {
+                return res.status(400).json({ message: error.message });
+            });
+    }
 }
 
 module.exports = new UserController();
