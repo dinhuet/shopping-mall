@@ -10,6 +10,12 @@ const {
 } = require('../../utils/mongoose');
 
 class UserController {
+    /**
+     * Get user profile.
+     * @param {*} req
+     * @param {*} res
+     * @param {*} next
+     */
     getUserProfile(req, res, next) {
         userService
             .getAllUser()
@@ -21,7 +27,12 @@ class UserController {
             .catch(next);
     }
 
-    // /register
+    /**
+     * Register.
+     * @param {Object} req - Truyền vào req.body thông tin đăng ký { name, email, password, isAdmin, confirmPassword, phone }
+     * @param {*} res
+     * @param {*} next
+     */
     register(req, res, next) {
         userService
             .createUser(req.body)
@@ -30,15 +41,20 @@ class UserController {
                     return res.status(201).json(result);
                 }
                 return res
-                    .status(404)
-                    .json({ message: 'Cannot create user account' });
+                    .status(result.status)
+                    .json({ message: result.message });
             })
             .catch((error) => {
                 return res.status(400).json({ message: error.message });
             });
     }
 
-    // /login
+    /**
+     * Login.
+     * @param {Object} req - Truyền vào req.body { email, password }
+     * @param {*} res
+     * @param {*} next
+     */
     login(req, res, next) {
         userService
             .loginUser(req.body)
@@ -47,14 +63,20 @@ class UserController {
                     return res.status(200).json(result);
                 }
                 return res
-                    .status(401)
-                    .json({ message: 'Invalid email or password' });
+                    .status(result.status)
+                    .json({ message: result.message });
             })
             .catch((error) => {
                 return res.status(400).json({ message: error.message });
             });
     }
 
+    /**
+     * Logout.
+     * @param {Object} req - req.user lấy dữ liệu user từ middleware.
+     * @param {*} res
+     * @param {*} next
+     */
     logout(req, res, next) {
         userService
             .logoutUser(req.user)
@@ -63,36 +85,75 @@ class UserController {
                     return res.status(200).json(result);
                 }
                 return res
-                    .status(401)
-                    .json({ message: 'Invalid user or refresh token' });
+                    .status(result.status)
+                    .json({ message: result.message });
             })
             .catch((error) => {
                 return res.status(400).json({ message: error.message });
             });
     }
 
+    /**
+     * Forgot password.
+     * @param {String} req - Truyền vào req.body email
+     * @param {*} res
+     * @param {*} next
+     */
     forgotPassword(req, res, next) {
         userService
-           .forgotPassword(req.body.email)
+            .forgotPassword(req.body.email)
             .then((result) => {
                 if (result.status === 'OK') {
                     return res.status(200).json(result);
                 }
-                return res.status(404).json({ message: 'User not found' });
+                return res
+                    .status(result.status)
+                    .json({ message: result.message });
             })
-           .catch((error) => {
+            .catch((error) => {
                 return res.status(400).json({ message: error.message });
             });
     }
 
+    /**
+     * Create new password.
+     * @param {Object} req - Truyền vào req.body { resetToken, newPassword, confirmPassword }
+     * @param {*} res
+     * @param {*} next
+     */
     resetPassword(req, res, next) {
         userService
-           .resetPassword(req.body)
+            .resetPassword(req.body)
             .then((result) => {
                 if (result.status === 'OK') {
                     return res.status(200).json(result);
                 }
-                return res.status(404).json({ message: 'User not found' });
+                return res
+                    .status(result.status)
+                    .json({ message: result.message });
+            })
+            .catch((error) => {
+                return res.status(400).json({ message: error.message });
+            });
+    }
+
+    /**
+     * Update profile.
+     * @param {*} req - Truyền vào req.body {name, password, confirmPassword, phone}
+     * - req.user: lấy từ middleWare verifyToken
+     * @param {*} res 
+     * @param {*} next 
+     */
+    updateProfile(req, res, next) {
+        userService
+            .updateProfile(req.user, req.body)
+            .then((result) => {
+                if (result.status === 'OK') {
+                    return res.status(200).json(result);
+                }
+                return res
+                   .status(result.status)
+                   .json({ message: result.message });
             })
            .catch((error) => {
                 return res.status(400).json({ message: error.message });
