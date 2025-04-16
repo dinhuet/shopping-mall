@@ -8,3 +8,5 @@ const handleRegister = async () => {
     console.error('Register failed:', error.response.data.message);
   }
 };
+
+export default handleRegister;

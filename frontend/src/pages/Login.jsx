@@ -10,3 +10,5 @@ const handleLogin = async () => {
     console.error('Login failed:', error.response.data.message);
   }
 };
+
+export default handleLogin;
