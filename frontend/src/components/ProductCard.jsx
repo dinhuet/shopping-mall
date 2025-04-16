@@ -7,7 +7,7 @@ function ProductCard({ product }) {
       <Link to={`/product/${product._id}`}>
         <img src={product.image} alt={product.name} />
         <h3>{product.name}</h3>
-        <p>{product.price}₫</p>
+        <p>{product.price.toLocaleString()}₫</p>
       </Link>
     </div>
   );
