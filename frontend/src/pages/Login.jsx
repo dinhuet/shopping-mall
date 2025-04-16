@@ -1,47 +1,94 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext'; // ✅ dùng custom hook
 import { useNavigate } from 'react-router-dom';
+import authAPI from '../api/authAPI';
+import { useAuth } from '../context/AuthContext';
+import './Login.css';
 
 function Login() {
-  const { login } = useAuth(); // ✅ dùng hook thay vì useContext
-  const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: '',
+  });
 
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');  // Thêm trạng thái success
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  // Hàm xử lý thay đổi giá trị input
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSubmit = async (e) => {
+  // Hàm xử lý đăng nhập
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);  // Bắt đầu quá trình đăng nhập
+    setError('');
+    setSuccess('');   // Reset success message khi bắt đầu đăng nhập
     try {
-      await login(form); // chờ login thành công
-      navigate('/');
+      const response = await authAPI.login(credentials);
+
+      if (response.status === 200) {
+        const { token, user } = response.data;
+        localStorage.setItem('token', token);
+        setUser(user);
+
+        // Hiển thị thông báo đăng nhập thành công
+        setSuccess('Đăng nhập thành công!');
+
+        // Đợi 1 giây để hiển thị thông báo trước khi chuyển hướng
+        setTimeout(() => {
+          navigate('/'); // Điều hướng đến trang chủ
+        }, 1000); // Giảm thời gian chờ xuống còn 1 giây
+
+        setLoading(false);
+      }
     } catch (err) {
-      alert('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+      setLoading(false);
+      if (err.response && err.response.data) {
+        setError(err.response.data.message || 'Thông tin đăng nhập không đúng');
+      } else {
+        setError('Đã xảy ra lỗi, vui lòng thử lại');
+      }
     }
   };
 
   return (
-    <div className="form-container">
+    <div className="login">
       <h2>Đăng nhập</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Mật khẩu"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Đăng nhập</button>
+      {error && <p className="error">{error}</p>}  {/* Hiển thị thông báo lỗi nếu có */}
+      {success && <p className="success">{success}</p>}  {/* Hiển thị thông báo thành công */}
+
+      <form onSubmit={handleLogin}>
+        <div>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={credentials.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <input
+            type="password"
+            name="password"
+            placeholder="Mật khẩu"
+            value={credentials.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <button type="submit" disabled={loading}> 
+          {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+        </button>
       </form>
     </div>
   );

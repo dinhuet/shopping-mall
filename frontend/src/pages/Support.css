@@ -1,0 +1,81 @@
+/* Support.css */
+
+.support-container {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .support-container h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .support-container p {
+    font-size: 1.1rem;
+    color: #34495e;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .support-container ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .support-container ul li {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #2980b9;
+  }
+  
+  .support-container a {
+    color: #2980b9;
+    text-decoration: none;
+  }
+  
+  .support-container a:hover {
+    text-decoration: underline;
+  }
+  
+  .support-container details {
+    margin-bottom: 15px;
+    background-color: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .support-container details summary {
+    font-weight: bold;
+    color: #16a085;
+  }
+  
+  .support-container details p {
+    font-size: 1rem;
+    color: #7f8c8d;
+    margin-top: 10px;
+  }
+  
+  .support-container .faq-section {
+    margin-top: 30px;
+  }
+  
+  .support-container .faq-section h2 {
+    font-size: 2rem;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .support-container .faq-section details {
+    margin-bottom: 20px;
+    background-color: #f1f1f1;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
