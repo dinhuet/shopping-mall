@@ -22,41 +22,45 @@ function Login() {
       ...credentials,
       [e.target.name]: e.target.value,
     });
-  };
+  };  
 
-  // Hàm xử lý đăng nhập
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);  // Bắt đầu quá trình đăng nhập
+    setLoading(true);
     setError('');
-    setSuccess('');   // Reset success message khi bắt đầu đăng nhập
+    setSuccess('');
+  
     try {
       const response = await authAPI.login(credentials);
-
-      if (response.status === 200) {
-        const { token, user } = response.data;
-        localStorage.setItem('token', token);
+      
+      // ✅ response chính là response.data (vì đã .then(...response.data))
+      console.log('API Response:', response);
+  
+      const { access_token, user } = response;
+  
+      if (access_token && user) {
+        localStorage.setItem('accessToken', access_token); 
         setUser(user);
-
-        // Hiển thị thông báo đăng nhập thành công
-        setSuccess('Đăng nhập thành công!');
-
-        // Đợi 1 giây để hiển thị thông báo trước khi chuyển hướng
-        setTimeout(() => {
-          navigate('/'); // Điều hướng đến trang chủ
-        }, 1000); // Giảm thời gian chờ xuống còn 1 giây
-
-        setLoading(false);
+  
+        navigate('/', { 
+          replace: true,
+          state: { fromLogin: true }
+        });
+      } else {
+        setError('Phản hồi từ máy chủ không hợp lệ');
       }
     } catch (err) {
-      setLoading(false);
-      if (err.response && err.response.data) {
-        setError(err.response.data.message || 'Thông tin đăng nhập không đúng');
+      console.error('Login Error:', err);
+  
+      if (err.message === 'Network Error') {
+        setError('Không thể kết nối đến server');
       } else {
-        setError('Đã xảy ra lỗi, vui lòng thử lại');
+        setError(err.message || 'Lỗi đăng nhập');
       }
+    } finally {
+      setLoading(false);
     }
-  };
+  };  
 
   return (
     <div className="login">

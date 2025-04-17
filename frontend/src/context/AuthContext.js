@@ -1,3 +1,4 @@
+// src/context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import authAPI from '../api/authAPI';
 
@@ -15,7 +16,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           const res = await authAPI.getProfile(token);
-          setUser(res.data);
+          setUser(res.data); // Cập nhật user nếu có
         } catch (err) {
           console.error('Lỗi khi lấy thông tin người dùng:', err?.response?.data?.message || err.message);
           localStorage.removeItem('token');
@@ -62,6 +63,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        setUser, // Cần phải thêm setUser ở đây
         login,
         logout,
         register,
