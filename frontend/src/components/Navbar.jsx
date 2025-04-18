@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import './Navbar.css';
@@ -7,8 +7,13 @@ import './Navbar.css';
 function Navbar() {
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
+  const navigate = useNavigate();
 
-  // Hàm scroll lên đầu trang
+  // Hàm chuyển đến phần "Liên hệ" trong Home.jsx
+  const goToContact = () => {
+    navigate('/#contact-section');
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -30,12 +35,12 @@ function Navbar() {
         <Link to="/#featured-products">
           <span role="img" aria-label="products">📦</span> Sản phẩm
         </Link>
-
-        <Link to="/support"><span role="img" aria-label="support">🛟</span> Hỗ trợ</Link>
-        {/* Thêm liên kết để cuộn đến phần Liên hệ */}
-        <Link to="#contact-section">
-          <span role="img" aria-label="contact">📞</span> Liên hệ
+        <Link to="/support">
+          <span role="img" aria-label="support">🛟</span> Hỗ trợ
         </Link>
+        <button className="link-button" onClick={goToContact}>
+          📞 Liên hệ
+        </button>
       </div>
 
       {/* Bên phải - Giỏ hàng + người dùng */}

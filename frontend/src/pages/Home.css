@@ -80,7 +80,8 @@
 }
 
 /* Home.css */
-.reviews-section {
+/* Phần đánh giá từ khách hàng */
+.review-section {
   margin-top: 30px;
   padding: 20px;
   background-color: #f9f9f9;
@@ -88,13 +89,13 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
-.reviews-section h2 {
+.review-section h2 {
   text-align: center;
   color: #ff6600;
   margin-bottom: 20px;
 }
 
-.reviews-list {
+.review-list {
   display: flex;
   flex-direction: column;
   gap: 20px;

@@ -97,3 +97,13 @@
   align-items: center;
   gap: 6px;
 }
+
+.link-button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;  
+  padding: 0;
+}
+
