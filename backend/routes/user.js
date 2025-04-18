@@ -5,7 +5,6 @@ const userController = require('../app/controllers/UserController');
 const authMiddleware = require('../app/middlewares/authMiddleware');
 const validateUserInput = require('../app/middlewares/validateUserInput');
 
-
 router.post('/refresh', authMiddleware.createNewAccessToken);
 router.post('/register', userController.register);
 router.post('/login', userController.login);
