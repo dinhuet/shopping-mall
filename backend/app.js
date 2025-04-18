@@ -9,12 +9,14 @@ require('dotenv').config(); // Load biến môi trường từ .env
 const port = process.env.PORT || 3000;
 
 // Cấu hình CORS
-app.use(cors({
-    origin: 'http://localhost:3000', // Cho phép frontend từ http://localhost:3000 truy cập
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức HTTP được phép
-    allowedHeaders: ['Content-Type', 'Authorization'], // Các headers được phép
-    credentials: true, // Cho phép gửi cookie/token trong yêu cầu CORS
-}));
+app.use(
+    cors({
+        origin: 'http://localhost:3000', // Cho phép frontend từ http://localhost:3000 truy cập
+        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức HTTP được phép
+        allowedHeaders: ['Content-Type', 'Authorization'], // Các headers được phép
+        credentials: true, // Cho phép gửi cookie/token trong yêu cầu CORS
+    }),
+);
 
 // Connect to db
 db.connect((err) => {

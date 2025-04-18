@@ -295,8 +295,8 @@ const resetPassword = ({ resetToken, newPassword, confirmPassword }) => {
             if (newPassword !== confirmPassword) {
                 return resolve({
                     status: 400,
-                    message: "Password do not match",
-                })
+                    message: 'Password do not match',
+                });
             }
 
             const match = await bcrypt.compare(newPassword, user.password);
@@ -327,9 +327,9 @@ const resetPassword = ({ resetToken, newPassword, confirmPassword }) => {
  * Update profile.
  * @param {Object} user - req.user
  * @param {Object} details - {name, password, phone}
- * @returns 
+ * @returns
  */
-const updateProfile = (user, details ) => {
+const updateProfile = (user, details) => {
     return new Promise(async (resolve, reject) => {
         try {
             const userId = user.id;
@@ -337,9 +337,9 @@ const updateProfile = (user, details ) => {
             const updatedUser = await User.findByIdAndUpdate(
                 userId,
                 { $set: details }, // Chỉ cập nhật các trường mới
-            { new: true } // Trả về user sau khi update
+                { new: true }, // Trả về user sau khi update
             );
-            
+
             if (!updatedUser) {
                 return resolve({
                     status: 404,

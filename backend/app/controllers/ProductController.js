@@ -95,6 +95,8 @@ class ProductController {
             })
             .catch(next);
     }
+
+    addReviewProduct(req, res, next) {}
 }
 
 module.exports = new ProductController();

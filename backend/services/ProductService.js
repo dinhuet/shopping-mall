@@ -1,4 +1,6 @@
 const Product = require('../app/models/Product');
+const Review = require('../app/models/Review');
+
 
 require('dotenv').config();
 
@@ -132,6 +134,23 @@ const deleteProduct = (productId) => {
         }
     });
 };
+
+
+const addReviewProduct = (review) => {
+    return new Promise(async (resolve, reject) => {
+        const { productId, userId, rating, comment } = review;
+  try {
+    const newReview = new Review({ productId, userId, rating, comment });
+    await newReview.save();
+    return resolve({
+        status: 201,
+        message: newReview,
+    })
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+    });
+}
 
 module.exports = {
     getProductById,

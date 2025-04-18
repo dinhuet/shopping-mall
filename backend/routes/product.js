@@ -5,6 +5,7 @@ const productController = require('../app/controllers/ProductController');
 const authMiddleware = require('../app/middlewares/authMiddleware');
 
 router.get('/detail/:id', productController.getProductDetail);
+router.post('/review/:id', productController.addReviewProduct);
 router.put(
     '/update/:id',
     authMiddleware.verifyToken,
