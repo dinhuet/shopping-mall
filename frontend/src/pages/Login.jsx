@@ -1,39 +1,44 @@
 import React, { useState } from 'react';
-import authAPI from '../api/authAPI';
+import { useAuth } from '../context/AuthContext'; // ✅ dùng custom hook
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { login } = useAuth(); // ✅ dùng hook thay vì useContext
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ email: '', password: '' });
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await authAPI.login({ email, password });
-      const { token, user } = res.data;
-      localStorage.setItem('token', token);
-      console.log('Đăng nhập thành công:', user);
-      // Có thể chuyển hướng sau khi login
-    } catch (error) {
-      console.error('Login failed:', error?.response?.data?.message || error.message);
+      await login(form); // chờ login thành công
+      navigate('/');
+    } catch (err) {
+      alert('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
     }
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Đăng nhập</h2>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSubmit}>
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={form.email}
+          onChange={handleChange}
           required
         />
         <input
           type="password"
+          name="password"
           placeholder="Mật khẩu"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={form.password}
+          onChange={handleChange}
           required
         />
         <button type="submit">Đăng nhập</button>
