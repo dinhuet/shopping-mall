@@ -1,13 +1,17 @@
 /* src/components/Navbar.css */
 
 .navbar {
-  background-color: #f8f9fa;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #fefefe;
   border-bottom: 1px solid #ddd;
   padding: 12px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(8px);
 }
 
 .navbar-left {
@@ -16,10 +20,16 @@
   align-items: center;
 }
 
-.shop-name {
+.logo {
+  text-decoration: none;
   font-size: 24px;
   font-weight: bold;
   color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.shop-name {
   margin-left: 8px;
 }
 
@@ -27,13 +37,14 @@
   flex: 2;
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 25px;
 }
 
 .navbar-center a {
   text-decoration: none;
   color: #333;
   font-weight: 500;
+  font-size: 16px;
   transition: color 0.3s ease;
 }
 
@@ -52,9 +63,9 @@
 .navbar-right a,
 .navbar-right button {
   text-decoration: none;
-  color: #333;
   font-size: 16px;
   font-weight: 500;
+  color: #333;
   transition: color 0.3s ease;
 }
 
@@ -67,7 +78,7 @@
   background-color: #e74c3c;
   color: white;
   border: none;
-  padding: 8px 15px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
 }
@@ -84,5 +95,5 @@
 .cart-icon {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
