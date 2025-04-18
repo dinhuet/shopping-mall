@@ -36,7 +36,7 @@ function Home() {
       comment: 'Sản phẩm rất tuyệt vời, chất lượng vượt ngoài mong đợi!',
     },
     {
-      name: 'Trần Xuân Đỉnh',
+      name: 'Trần Quang Đỉnh',
       rating: 4,
       comment: 'Dịch vụ giao hàng nhanh chóng, sản phẩm đẹp, chỉ có điều giá hơi cao.',
     },
@@ -44,6 +44,11 @@ function Home() {
       name: 'Lê Kim Thành',
       rating: 5,
       comment: 'Mua lần thứ 2, chất lượng vẫn tuyệt vời, rất hài lòng!',
+    },
+    {
+      name: 'Đỗ Đức Đăng',
+      rating: 5,
+      comment: 'Quán rất ấm cúng, nhân viên thân thiện, đặc biệt cà phê rất ngon!',
     },
   ];
 
@@ -119,6 +124,25 @@ function Home() {
       {/* Thêm ảnh Shopping.jpg */}
       <div className="shopping-image">
         <img src={`${process.env.PUBLIC_URL}/Shopping.jpg`} alt="Shopping" />
+      </div>
+
+      {/* Đánh giá từ khách hàng */}
+      <div className="review-section">
+        <h2>🗣️ Đánh giá từ khách hàng</h2>
+        <div className="review-list">
+          {reviews.map((review, index) => (
+            <div key={index} className="review-card">
+              <h4>{review.name}</h4>
+              <p>
+                {/* Hiển thị sao đánh giá */}
+                {Array.from({ length: review.rating }).map((_, i) => (
+                  <span key={i}>⭐</span>
+                ))}
+              </p>
+              <p>"{review.comment}"</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Liên hệ */}
