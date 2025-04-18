@@ -141,8 +141,8 @@ class UserController {
      * Update profile.
      * @param {*} req - Truyền vào req.body {name, password, confirmPassword, phone}
      * - req.user: lấy từ middleWare verifyToken
-     * @param {*} res 
-     * @param {*} next 
+     * @param {*} res
+     * @param {*} next
      */
     updateProfile(req, res, next) {
         userService
@@ -152,10 +152,10 @@ class UserController {
                     return res.status(200).json(result);
                 }
                 return res
-                   .status(result.status)
-                   .json({ message: result.message });
+                    .status(result.status)
+                    .json({ message: result.message });
             })
-           .catch((error) => {
+            .catch((error) => {
                 return res.status(400).json({ message: error.message });
             });
     }

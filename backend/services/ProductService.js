@@ -1,4 +1,5 @@
 const Product = require('../app/models/Product');
+const Review = require('../app/models/Review');
 
 require('dotenv').config();
 
@@ -133,10 +134,67 @@ const deleteProduct = (productId) => {
     });
 };
 
+/**
+ * Tạo mới bình luận.
+ * @param {Object} review - { productId, rating, comment }
+ * @param {*} userId - lấy từ authMiddleware
+ * @returns
+ */
+const createProductReview = (review, userId) => {
+    return new Promise(async (resolve, reject) => {
+        const { productId, rating, comment } = review;
+        try {
+            const newReview = new Review({
+                productId,
+                userId,
+                rating,
+                comment,
+            });
+            await newReview.save();
+            return resolve({
+                status: 'OK',
+                message: 'Review created successfully',
+                data: newReview,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+/**
+ * Lấy tất cả các bình luận.
+ * @param {String} productId - lấy từ params
+ * @returns
+ */
+const getProductReview = (productId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const reviews = await Review.find({ productId }).populate(
+                'userId',
+                'name',
+            );
+            if (!reviews || reviews.length === 0) {
+                return resolve({
+                    status: 'NOT_FOUND',
+                    message: 'Chưa có đánh giá nào cho sản phẩm này',
+                });
+            }
+            return resolve({
+                data: reviews,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     getProductById,
     getAllProduct,
     createProduct,
     updateProduct,
     deleteProduct,
+    createProductReview,
+    getProductReview,
 };

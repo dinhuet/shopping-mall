@@ -95,6 +95,40 @@ class ProductController {
             })
             .catch(next);
     }
+
+    /**
+     * Tạo mới bình luận.
+     * @param {*} req - Truyền vào req.body {productId, rating, comment}
+     * - req.header chứa access token của user
+     * @param {*} res
+     * @param {*} next
+     */
+    createProductReview(req, res, next) {
+        productService
+            .createProductReview(req.body, req.user.id)
+            .then((review) => {
+                if (review.status === 'OK') {
+                    return res.status(200).json(review);
+                }
+                return res.json(review.message);
+            })
+            .catch(next);
+    }
+
+    /**
+     * Lấy tất cả bình luận.
+     * @param {*} req
+     * @param {*} res
+     * @param {*} next
+     */
+    getProductReview(req, res, next) {
+        productService
+            .getProductReview(req.params.id)
+            .then((reviews) => {
+                res.status(200).json(reviews);
+            })
+            .catch(next);
+    }
 }
 
 module.exports = new ProductController();
