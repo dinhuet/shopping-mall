@@ -189,6 +189,34 @@ const getProductReview = (productId) => {
     });
 };
 
+
+
+/**
+ * delete review by id.
+ * @param {String} reviewId - ID bình luận 
+ * @returns
+ */
+const deleteProductReview = (reviewId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const deletedReview = await Review.findByIdAndDelete(reviewId);
+            if (!deletedReview) {
+                return resolve({
+                    status: 404,
+                    message: 'Review not found',
+                });
+            }
+
+            return resolve({
+                status: 'OK',
+                message: 'Review deleted successfully',
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     getProductById,
     getAllProduct,
@@ -197,4 +225,5 @@ module.exports = {
     deleteProduct,
     createProductReview,
     getProductReview,
+    deleteProductReview,
 };

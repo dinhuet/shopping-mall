@@ -129,6 +129,27 @@ class ProductController {
             })
             .catch(next);
     }
+
+    
+    /**
+     * delete product review by reviewId.
+     * @param {*} req
+     * @param {*} res
+     * @param {*} next
+     */
+    deleteProductReview(req, res, next) {
+        const reviewId = req.params.id;
+
+        productService
+            .deleteReview(reviewId)
+            .then((result) => {
+                if (result.status === 'OK') {
+                    return res.status(200).json(result);
+                }
+                return res.status(result.status).json(result.message);
+            })
+            .catch(next);
+    }
 }
 
 module.exports = new ProductController();

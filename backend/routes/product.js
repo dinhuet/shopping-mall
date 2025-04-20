@@ -10,6 +10,12 @@ router.post(
     authMiddleware.verifyToken,
     productController.createProductReview,
 );
+router.delete(
+    '/review/:id',
+    authMiddleware.verifyToken,
+    authMiddleware.verifyAdmin, 
+    productController.deleteProductReview
+);
 router.get('/review/:id', productController.getProductReview);
 router.put(
     '/update/:id',
