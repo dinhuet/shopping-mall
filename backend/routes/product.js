@@ -11,6 +11,12 @@ router.post(
     productController.createProductReview,
 );
 router.get('/review/:id', productController.getProductReview);
+router.delete(
+    '/review/:id',
+    authMiddleware.verifyToken,
+    authMiddleware.verifyAdmin, 
+    productController.deleteProductReview
+);
 router.put(
     '/update/:id',
     authMiddleware.verifyToken,
