@@ -1,45 +1,45 @@
 @echo off
 title Run Node.js Project
 echo ---------------------------------------------
-echo 🚀 Khởi động dự án Node.js
+echo 🚀 Node.js Project Launcher
 echo ---------------------------------------------
 echo.
-echo Chọn hành động:
-echo [1] Cài đặt dependencies (npm install)
-echo [2] Chạy dự án (npm start)
-echo [3] Định dạng code (npm run beautiful)
-echo [4] Thoát
+echo Choose an action:
+echo [1] Install dependencies (npm install)
+echo [2] Start the server (npm start)
+echo [3] Format code with Prettier (npm run beautiful)
+echo [4] Exit
 echo.
 
 :MENU
-set /p choice=Nhập lựa chọn của bạn (1/2/3/4): 
+set /p choice=Enter your choice (1/2/3/4): 
 
 if "%choice%"=="1" (
     echo Installing dependencies...
     call npm install
-    echo Cài đặt xong!
+    echo Dependencies installed!
     goto MENU
 )
 
 if "%choice%"=="2" (
-    echo Đang khởi động server với Nodemon...
+    echo Starting the server with Nodemon...
     call npm start
     goto END
 )
 
 if "%choice%"=="3" (
-    echo Đang định dạng mã nguồn bằng Prettier...
+    echo Formatting code with Prettier...
     call npm run beautiful
-    echo Định dạng xong!
+    echo Code formatted!
     goto MENU
 )
 
 if "%choice%"=="4" (
-    echo Đã thoát.
+    echo Exiting...
     goto END
 )
 
-echo Lựa chọn không hợp lệ. Vui lòng thử lại.
+echo Invalid choice. Please try again.
 goto MENU
 
 :END
