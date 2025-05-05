@@ -5,7 +5,6 @@ const userController = require('../app/controllers/UserController');
 const authMiddleware = require('../app/middlewares/authMiddleware');
 const validateUserInput = require('../app/middlewares/validateUserInput');
 
-
 router.post('/refresh', authMiddleware.createNewAccessToken);
 router.post('/register', userController.register);
 router.post('/login', userController.login);
@@ -18,7 +17,7 @@ router.put(
     validateUserInput.validateUserInput,
     userController.updateProfile,
 );
-
-router.get('/', userController.getUserProfile);
+router.get('/all', authMiddleware.verifyToken, authMiddleware.verifyAdmin, userController.getAllUsers);
+router.get('/profile', authMiddleware.verifyToken, userController.getUserProfile);
 
 module.exports = router;

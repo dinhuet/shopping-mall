@@ -1,0 +1,27 @@
+[
+  {
+    "id": "admin1",
+    "email": "23020678@vnu.edu.vn",
+    "password": "23020678"
+  },
+  {
+    "id": "admin2",
+    "email": "23020672@vnu.edu.vn",
+    "password": "23020672"
+  },
+  {
+    "id": "admin3",
+    "email": "23021526@vnu.edu.vn",
+    "password": "23021526"
+  },
+  {
+    "id": "admin4",
+    "email": "23020043@vnu.edu.vn",
+    "password": "23020043"
+  },
+  {
+    "id": "admin5",
+    "email": "23020154@vnu.edu.vn",
+    "password": "23020154"
+  }
+]

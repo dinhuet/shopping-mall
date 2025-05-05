@@ -1,0 +1,106 @@
+/* src/pages/AdminDashboard.css */
+
+.admin-dashboard {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .admin-dashboard h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .admin-dashboard p {
+    font-size: 1.125rem;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  button {
+    font-size: 1rem;
+    padding: 16px;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  button:hover {
+    transform: scale(1.05);
+  }
+  
+  button:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 159, 28, 0.5); /* Thêm viền sáng khi focus */
+  }
+  
+  .bg-blue-500 {
+    background-color: #3b82f6;
+  }
+  
+  .bg-blue-500:hover {
+    background-color: #2563eb;
+  }
+  
+  .bg-green-500 {
+    background-color: #10b981;
+  }
+  
+  .bg-green-500:hover {
+    background-color: #059669;
+  }
+  
+  .bg-purple-500 {
+    background-color: #8b5cf6;
+  }
+  
+  .bg-purple-500:hover {
+    background-color: #7c3aed;
+  }
+  
+  .bg-pink-500 {
+    background-color: #ec4899;
+  }
+  
+  .bg-pink-500:hover {
+    background-color: #db2777;
+  }
+  
+  .bg-yellow-500 {
+    background-color: #f59e0b;
+  }
+  
+  .bg-yellow-500:hover {
+    background-color: #d97706;
+  }
+  
+  button:disabled {
+    background-color: #e5e7eb;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 768px) {
+    .admin-dashboard {
+      padding: 16px;
+    }
+  
+    .admin-dashboard h1 {
+      font-size: 1.75rem;
+    }
+  
+    .admin-dashboard p {
+      font-size: 1rem;
+    }
+  }
+  

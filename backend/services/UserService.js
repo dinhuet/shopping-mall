@@ -179,10 +179,16 @@ const loginUser = (userLogin) => {
                     message: 'Invalid password',
                 });
             } else {
+                // Trong phương thức loginUser
+                // Trong phương thức loginUser
                 const access_token = jwt.sign(
-                    { id: user._id },
+                    { 
+                    id: user._id,
+                    _id: user._id, // <-- Thêm dòng này
+                    isAdmin: user.isAdmin 
+                    },
                     process.env.JWT_SECRET,
-                    { expiresIn: '1h' },
+                    { expiresIn: '1h' }
                 );
                 const refresh_token = jwt.sign(
                     { id: user._id },

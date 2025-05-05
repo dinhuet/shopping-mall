@@ -1,4 +1,3 @@
-// src/context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import authAPI from '../api/authAPI';
 
@@ -6,41 +5,54 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
 
-  // Lấy token từ localStorage
   const token = localStorage.getItem('token');
+  const adminToken = localStorage.getItem('adminToken');
 
-  // Hàm lấy thông tin user nếu đã đăng nhập
   useEffect(() => {
     const fetchProfile = async () => {
-      if (token) {
-        try {
+      try {
+        if (token && !adminToken) {
           const res = await authAPI.getProfile(token);
-          setUser(res.data); // Cập nhật user nếu có
-        } catch (err) {
-          console.error('Lỗi khi lấy thông tin người dùng:', err?.response?.data?.message || err.message);
-          localStorage.removeItem('token');
-          setUser(null);
+          setUser(res);
         }
+        // Bạn có thể thêm API riêng để lấy admin profile nếu cần
+        // Ví dụ: const adminRes = await authAPI.getAdminProfile(adminToken);
+        // setAdmin(adminRes);
+      } catch (err) {
+        console.error('Lỗi khi lấy thông tin người dùng:', err.message);
+        localStorage.removeItem('token');
+        localStorage.removeItem('adminToken');
+        setUser(null);
+        setAdmin(null);
       }
     };
     fetchProfile();
-  }, [token]);
+  }, [token, adminToken]);
 
-  // Hàm đăng nhập
   const login = async (credentials) => {
     try {
       const res = await authAPI.login(credentials);
-      localStorage.setItem('token', res.data.token);
-      setUser(res.data.user);
+      localStorage.setItem('token', res.access_token);
+      setUser(res.user);
       return { success: true };
     } catch (err) {
-      console.error('Lỗi đăng nhập:', err?.response?.data?.message || err.message);
-      return { success: false, message: err?.response?.data?.message || 'Đăng nhập thất bại' };
+      return { success: false, message: err.message };
     }
   };
 
-  // Hàm đăng ký
+  const adminLogin = async (credentials) => {
+    try {
+      const { token, admin } = await authAPI.adminLogin(credentials);
+      localStorage.setItem('adminToken', token);
+      setAdmin(admin);
+      return { success: true };
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  };
+
   const register = async (userData) => {
     try {
       const res = await authAPI.register(userData);
@@ -48,26 +60,30 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.user);
       return { success: true };
     } catch (err) {
-      console.error('Lỗi đăng ký:', err?.response?.data?.message || err.message);
-      return { success: false, message: err?.response?.data?.message || 'Đăng ký thất bại' };
+      return { success: false, message: err.message };
     }
   };
 
-  // Hàm đăng xuất
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('adminToken');
     setUser(null);
+    setAdmin(null);
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        setUser, // Cần phải thêm setUser ở đây
+        admin,
+        setUser,
+        setAdmin,
         login,
+        adminLogin,
         logout,
         register,
         isAuthenticated: !!user,
+        isAdminAuthenticated: !!admin,
       }}
     >
       {children}

@@ -1,0 +1,46 @@
+.slick-slide {
+  padding: 5px; /* giảm padding cho nhỏ gọn */
+}
+
+.slick-dots li button:before {
+  color: gray;
+  font-size: 10px;
+}
+
+.slick-dots li.slick-active button:before {
+  color: black;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: black;
+  font-size: 20px;
+}
+
+/* Thêm hiệu ứng hover cho các nút điều khiển */
+.slick-prev:hover:before,
+.slick-next:hover:before {
+  color: #007bff; /* Màu xanh dương khi hover */
+  font-size: 22px; /* Tăng kích thước khi hover */
+}
+
+/* Cải thiện sự chuyển động của slider */
+.slick-slide img {
+  transition: transform 0.3s ease-in-out;
+}
+
+.slick-slide:hover img {
+  transform: scale(1.05); /* Phóng to ảnh khi hover */
+}
+
+/* Đảm bảo slider hiển thị đẹp trên các kích thước màn hình nhỏ */
+@media (max-width: 768px) {
+  .slick-slide img {
+    height: auto; /* Điều chỉnh chiều cao của ảnh khi trên màn hình nhỏ */
+  }
+}
+
+/* Tăng khoảng cách giữa các slide */
+.slick-slide {
+  margin: 0 10px;
+}

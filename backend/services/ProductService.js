@@ -1,4 +1,5 @@
 const Product = require('../app/models/Product');
+const mongoose = require('mongoose');
 
 require('dotenv').config();
 
@@ -114,6 +115,13 @@ const updateProduct = (productId, detail) => {
 const deleteProduct = (productId) => {
     return new Promise(async (resolve, reject) => {
         try {
+            if (!mongoose.Types.ObjectId.isValid(productId)) {
+                return resolve({
+                    status: 400,
+                    message: 'Invalid product ID',
+                });
+            }
+
             const deletedProduct = await Product.findByIdAndDelete(productId);
 
             if (!deletedProduct) {

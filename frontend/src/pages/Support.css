@@ -79,3 +79,49 @@
     border-radius: 8px;
   }
   
+  /* Responsive for Support.css */
+@media (max-width: 768px) {
+  .support-container {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .support-container h1 {
+    font-size: 2rem;
+  }
+
+  .support-container p {
+    font-size: 1rem;
+  }
+
+  .support-container ul li {
+    font-size: 1rem;
+  }
+
+  .support-container details {
+    padding: 8px;
+  }
+
+  .support-container details p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .support-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .support-container p,
+  .support-container ul li {
+    font-size: 0.95rem;
+  }
+
+  .support-container details summary {
+    font-size: 1rem;
+  }
+
+  .support-container {
+    padding: 12px;
+  }
+}

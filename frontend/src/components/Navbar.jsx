@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -8,11 +8,11 @@ function Navbar() {
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Thêm trạng thái để mở/đóng menu
 
-  // Hàm chuyển đến phần "Liên hệ" trong Home.jsx
   const goToContact = () => {
-    navigate('/#contact-section');
-  };
+    navigate('/', { state: { scrollTo: 'contact' } });
+  };  
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -28,13 +28,13 @@ function Navbar() {
       </div>
 
       {/* Ở giữa - Liên kết điều hướng */}
-      <div className="navbar-center">
+      <div className={`navbar-center ${isMenuOpen ? 'show' : ''}`}>
         <Link to="/" onClick={scrollToTop}>
           <span role="img" aria-label="home">🏠</span> Trang chủ
         </Link>
-        <Link to="/#featured-products">
-          <span role="img" aria-label="products">📦</span> Sản phẩm
-        </Link>
+        <button className="link-button" onClick={() => navigate('/', { state: { scrollTo: 'featured' } })}>
+          📦 Sản phẩm
+        </button>
         <Link to="/support">
           <span role="img" aria-label="support">🛟</span> Hỗ trợ
         </Link>
@@ -46,20 +46,31 @@ function Navbar() {
       {/* Bên phải - Giỏ hàng + người dùng */}
       <div className="navbar-right">
         <Link to="/cart" className="cart-icon">
-          🛒 <span>({cartItems.length})</span>
+          🛒 <span>({cartItems.reduce((total, item) => total + item.quantity, 0)})</span>
         </Link>
 
         {user ? (
           <>
             <span className="greeting">👋 {user.name || 'User'}</span>
+            {user.role === 'admin' && (
+              <Link to="/admin-dashboard">Dashboard Admin</Link>
+            )}
             <button onClick={logout}>Đăng xuất</button>
           </>
         ) : (
           <>
             <Link to="/login"><span role="img" aria-label="login">🔑</span> Đăng nhập</Link>
             <Link to="/register"><span role="img" aria-label="register">📝</span> Đăng ký</Link>
+            <Link to="/admin-login"><span role="img" aria-label="admin-login">🔑</span> Đăng nhập Admin</Link>
           </>
         )}
+      </div>
+
+      {/* Menu Hamburger */}
+      <div className="burger-menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <div></div>
+        <div></div>
+        <div></div>
       </div>
     </nav>
   );

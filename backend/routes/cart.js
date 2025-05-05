@@ -13,4 +13,6 @@ router.put(
     cartController.removeFromCart,
 );
 
+router.delete('/:id', authMiddleware.verifyToken, cartController.removeFromCart);
+
 module.exports = router;

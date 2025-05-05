@@ -159,6 +159,18 @@ class UserController {
                 return res.status(400).json({ message: error.message });
             });
     }
+    
+    getAllUsers(req, res, next) {
+        userService
+            .getAllUser()
+            .then((users) => {
+                res.status(200).json(muiltipleMongooseToObject(users));
+            })
+            .catch((error) => {
+                res.status(500).json({ message: error.message });
+            });
+    }
+    
 }
 
 module.exports = new UserController();

@@ -1,33 +1,64 @@
 import React, { useEffect, useState, useRef } from 'react';
-import productAPI from '../api/productAPI';
+import { useNavigate } from 'react-router-dom';
+import axiosClient from '../api/axiosClient'; 
 import ProductCard from '../components/ProductCard';
 import './Home.css';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import Slider from 'react-slick';
+import { useCart } from '../context/CartContext';
 
 function Home() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const { addToCart: updateCartContext } = useCart();
+  const [featuredProducts, setFeaturedProducts] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const featuredRef = useRef(null);
-  const contactRef = useRef(null); // Thêm ref cho phần Liên hệ
-
-  const location = useLocation();
+  const contactRef = useRef(null);
+  const { user } = useAuth(); 
+  const navigate = useNavigate();
+  const location = useLocation(); 
 
   useEffect(() => {
-    if (location.hash === '#featured-products') {
+    const fetchFeaturedProducts = async () => {
+      try {
+        const response = await axiosClient.get('/api/menu'); 
+        setFeaturedProducts(response.data); 
+      } catch (error) {
+        setError('Không thể tải sản phẩm. Vui lòng thử lại sau.');
+        console.error('Lỗi khi lấy sản phẩm:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFeaturedProducts();
+  }, []);
+
+  useEffect(() => {
+    if (location.state?.scrollTo === 'featured') {
       setTimeout(() => {
-        if (featuredRef.current) {
-          featuredRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100); // delay nhỏ
-    } else if (location.hash === '#contact-section') {
-      setTimeout(() => {
-        if (contactRef.current) {
-          contactRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100); // delay nhỏ
+        featuredRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
   }, [location]);
+
+  useEffect(() => {
+    if (location.state?.scrollTo === 'contact') {
+      setTimeout(() => {
+        contactRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [location]);
+  
+  useEffect(() => {
+    // Nếu có thông báo từ login, có thể tự động chuyển đến phần cần thiết trong trang Home
+    if (location.state?.fromLogin) {
+      window.scrollTo(0, 0);  // Đảm bảo trang được cuộn về đầu khi người dùng chuyển đến trang chủ
+    }
+  }, [location]);  
 
   const reviews = [
     {
@@ -52,13 +83,50 @@ function Home() {
     },
   ];
 
+  const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+  
+    const filtered = products.filter((product) =>
+      product.name.toLowerCase().includes(value)
+    );
+    setFilteredProducts(filtered);
+  };  
+
+  const handleBuy = async (product) => {
+    if (!user) {
+      alert('Bạn cần đăng nhập để mua hàng!');
+      navigate('/login');
+      return;
+    }
+    try {
+      const response = await axiosClient.post('/cart/add', {
+        productId: product._id,
+        quantity: 1
+      });
+
+      if (response.status === 200) {
+        updateCartContext({
+          product: { ...product, _id: product._id },
+          quantity: 1
+        });
+        alert('Thêm vào giỏ hàng thành công!');
+      }
+    } catch (error) {
+      console.error('Lỗi khi thêm sản phẩm:', error);
+      alert(error.response?.data?.message || 'Lỗi server');
+    }
+  };
+  
   useEffect(() => {
     window.scrollTo(0, 0);
     const fetchProducts = async () => {
       try {
-        const response = await productAPI.getAll();
-        if (Array.isArray(response)) {
-          setProducts(response);
+        const response = await axiosClient.get('/api/menu'); // Lấy sản phẩm từ API đúng endpoint
+        if (Array.isArray(response.data)) {
+          setProducts(response.data);
         } else {
           setError('Dữ liệu sản phẩm không hợp lệ.');
         }
@@ -106,20 +174,46 @@ function Home() {
         </ul>
       </div>
 
-      {/* Sản phẩm nổi bật */}
-      <h1 ref={featuredRef} id="featured-products">🔥 Sản phẩm nổi bật</h1>
+      <div className="search-bar">
+      <input
+        type="text"
+        placeholder="🔍 Tìm kiếm sản phẩm..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+        className="search-input"
+      />
+    </div>
 
-      {loading && <p>⏳ Đang tải sản phẩm...</p>}
-      {error && <p className="error">❌ {error}</p>}
-      {!loading && products.length === 0 && !error && (
-        <p>🙁 Không có sản phẩm nào để hiển thị.</p>
-      )}
 
-      <div className="product-list">
-        {products.map((product) => (
-          <ProductCard key={product._id || product.id} product={product} />
-        ))}
-      </div>
+    <section ref={featuredRef}>
+        <h2>Sản phẩm nổi bật</h2>
+        <div className="product-carousel">
+          {loading ? (
+            <p>Đang tải sản phẩm...</p>
+          ) : error ? (
+            <p>{error}</p>
+          ) : (
+            <Slider dots={true} infinite={true} speed={500} slidesToShow={3} slidesToScroll={1}>
+              {featuredProducts.length > 0 ? (
+                (searchTerm ? filteredProducts : featuredProducts).map((product) => (
+                  <div key={product._id} className="product-card">
+                    <img src={product.image} alt={product.name} />
+                    <div className="product-details">
+                      <h3>{product.name}</h3>
+                      <p><strong>Số lượng:</strong> {product.countInStock}</p>
+                      <p><strong>Mô tả:</strong> {product.description}</p>
+                      <p><strong>Giá:</strong> {product.price}₫</p>
+                      <button className="buy-button" onClick={() => handleBuy(product)}>Mua</button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p>Không có sản phẩm nổi bật hiện tại.</p>
+              )}
+            </Slider>
+          )}
+        </div>
+      </section>
 
       {/* Thêm ảnh Shopping.jpg */}
       <div className="shopping-image">
@@ -171,16 +265,16 @@ function Home() {
         </div>
 
         <div className="contact-right">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.8612163515872!2d105.78010407503167!3d21.0382383806135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab354920c233%3A0x5d0313a3bfdc4f37!2sVNU%20University%20of%20Engineering%20and%20Technology!5e0!3m2!1sen!2s!4v1744813173296!5m2!1sen!2s"
-            width="600"
-            height="450"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Google Map"
-          />
+        <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.861091188072!2d105.78010407471469!3d21.038243387453836!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab354920c233%3A0x5d0313a3bfdc4f37!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBDw7RuZyBuZ2jhu4csIMSQ4bqhaSBo4buNYyBRdeG7kWMgZ2lhIEjDoCBO4buZaQ!5e0!3m2!1svi!2s!4v1745857620146!5m2!1svi!2s"
+        width="600"
+        height="450"
+        style={{ border: '0' }} // Sửa ở đây
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
+
         </div>
       </div>
 

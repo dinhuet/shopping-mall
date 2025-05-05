@@ -1,11 +1,28 @@
 const Cart = require('../app/models/Cart');
 const productService = require('./ProductService');
 const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 require('dotenv').config();
 
+// Hàm kiểm tra và chuyển đổi userId thành ObjectId hợp lệ
+const toObjectId = (id) => {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        throw new Error('Invalid userId format');
+    }
+    return new mongoose.Types.ObjectId(id);
+};  
+  
 const getCartById = async (userId) => {
-    return await Cart.find({ userId });
+    const objectId = toObjectId(userId); // Chuyển đổi userId thành ObjectId hợp lệ
+    if (!objectId) {
+        throw new Error('Invalid userId');
+    }
+    try {
+        return await Cart.find({ userId: objectId });
+    } catch (error) {
+        throw error;
+    }
 };
 
 /**
@@ -14,49 +31,37 @@ const getCartById = async (userId) => {
  * @param {Object} item - Thông tin sản phẩm { productId, quantity }
  * @returns {Promise<Object>} - Giỏ hàng đã được cập nhật.
  */
-const addToCart = (userId, item) => {
-    return new Promise(async (resolve, reject) => {
-        const { productId, quantity } = item;
-        try {
-            const product = await productService.getProductById(productId);
-            if (!product) {
-                return resolve({
-                    status: 404,
-                    message: 'Product not found',
-                });
-            }
+const addToCart = async (userId, item) => {
+    const { productId, quantity } = item;
+    const userObjectId = toObjectId(userId);
+    
+    const product = await productService.getProductById(productId);
+    if (!product) throw new Error('Product not found');
 
-            let cart = await Cart.findOne({ userId });
-            if (!cart) {
-                cart = new Cart({
-                    userId,
-                    items: [{ productId, quantity }],
-                    totalPrice: product.price * quantity,
-                });
-            } else {
-                const existingItem = cart.items.find((item) =>
-                    item.productId.equals(productId),
-                );
-                if (existingItem) {
-                    existingItem.quantity += quantity;
-
-                    cart.totalPrice += product.price * quantity;
-                } else {
-                    cart.items.push({ productId, quantity });
-                    cart.totalPrice += product.price * quantity;
-                }
-            }
-
-            await cart.save();
-            return resolve({
-                status: 'OK',
-                message: 'Cart added successfully',
-                data: cart,
-            });
-        } catch (error) {
-            reject(error);
+    let cart = await Cart.findOne({ userId: userObjectId });
+    
+    if (!cart) {
+        cart = new Cart({
+            userId: userObjectId,
+            items: [{ productId, quantity }],
+            totalPrice: product.price * quantity,
+        });
+    } else {
+        const existingItem = cart.items.find(item => 
+            item.productId.equals(productId)
+        );
+        
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            cart.items.push({ productId, quantity });
         }
-    });
+        
+        cart.totalPrice += product.price * quantity;
+    }
+
+    await cart.save();
+    return cart;
 };
 
 /**
@@ -69,8 +74,10 @@ const updateCart = (userId, item) => {
     return new Promise(async (resolve, reject) => {
         const { productId, quantity } = item;
         try {
+            const objectId = toObjectId(userId); // Chuyển đổi userId thành ObjectId hợp lệ
+
             const cart = await Cart.findOneAndUpdate(
-                { userId },
+                { userId: objectId },
                 { $set: { 'items.$[item].quantity': quantity } },
                 {
                     new: true,
@@ -86,12 +93,19 @@ const updateCart = (userId, item) => {
             }
 
             cart.totalPrice = 0;
-            for (const item of cart.items) {
-                let product = await productService.getProductById(
-                    item.productId,
-                );
+            for (let i = cart.items.length - 1; i >= 0; i--) {
+                const item = cart.items[i];
+                const product = await productService.getProductById(item.productId);
+
+                if (!product) {
+                    // Sản phẩm không còn tồn tại, loại khỏi giỏ hàng
+                    cart.items.splice(i, 1);
+                    continue;
+                }
+
                 cart.totalPrice += item.quantity * product.price;
             }
+
 
             await cart.save();
             return resolve({
@@ -113,8 +127,10 @@ const updateCart = (userId, item) => {
 const removeFromCart = (userId, productId) => {
     return new Promise(async (resolve, reject) => {
         try {
+            const objectId = toObjectId(userId); // Chuyển đổi userId thành ObjectId hợp lệ
+
             const cart = await Cart.findOneAndUpdate(
-                { userId },
+                { userId: objectId },
                 { $pull: { items: { productId } } },
                 { new: true },
             );
@@ -127,10 +143,15 @@ const removeFromCart = (userId, productId) => {
             }
 
             cart.totalPrice = 0;
-            for (const item of cart.items) {
-                let product = await productService.getProductById(
-                    item.productId,
-                );
+            for (let i = cart.items.length - 1; i >= 0; i--) {
+                const item = cart.items[i];
+                const product = await productService.getProductById(item.productId);
+
+                if (!product) {
+                    cart.items.splice(i, 1);
+                    continue;
+                }
+
                 cart.totalPrice += item.quantity * product.price;
             }
 

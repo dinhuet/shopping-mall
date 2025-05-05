@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authAPI from '../api/authAPI';
 import { useAuth } from '../context/AuthContext';
@@ -11,10 +11,11 @@ function Login() {
   });
 
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');  // Thêm trạng thái success
+  const [success, setSuccess] = useState('');
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   // Hàm xử lý thay đổi giá trị input
   const handleChange = (e) => {
@@ -22,7 +23,7 @@ function Login() {
       ...credentials,
       [e.target.name]: e.target.value,
     });
-  };  
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,36 +32,21 @@ function Login() {
     setSuccess('');
   
     try {
-      const response = await authAPI.login(credentials);
-      
-      // ✅ response chính là response.data (vì đã .then(...response.data))
-      console.log('API Response:', response);
+      const result = await login(credentials); // GỌI login TỪ AuthContext
   
-      const { access_token, user } = response;
-  
-      if (access_token && user) {
-        localStorage.setItem('accessToken', access_token); 
-        setUser(user);
-  
-        navigate('/', { 
-          replace: true,
-          state: { fromLogin: true }
-        });
+      if (result.success) {
+        setSuccess('Đăng nhập thành công!');
+        navigate('/', { state: { fromLogin: true } });
       } else {
-        setError('Phản hồi từ máy chủ không hợp lệ');
+        setError(result.message || 'Thông tin đăng nhập không đúng!');
       }
     } catch (err) {
-      console.error('Login Error:', err);
-  
-      if (err.message === 'Network Error') {
-        setError('Không thể kết nối đến server');
-      } else {
-        setError(err.message || 'Lỗi đăng nhập');
-      }
+      console.error(err);
+      setError('Đăng nhập thất bại, vui lòng thử lại!');
     } finally {
       setLoading(false);
     }
-  };  
+  };        
 
   return (
     <div className="login">
@@ -90,7 +76,7 @@ function Login() {
           />
         </div>
 
-        <button type="submit" disabled={loading}> 
+        <button type="submit" disabled={loading}>
           {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </button>
       </form>

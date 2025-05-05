@@ -103,7 +103,82 @@
   border: none;
   color: inherit;
   cursor: pointer;
-  font: inherit;  
+  font: inherit;
   padding: 0;
 }
 
+.navbar-center .link-button {
+  color: #333;
+  font-weight: 500;
+  font-size: 16px;
+  transition: color 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.navbar-center .link-button:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 16px;
+  }
+
+  .navbar-center {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    display: none; /* Ẩn menu mặc định */
+  }
+
+  .navbar-center.show {
+    display: flex; /* Hiển thị menu khi có lớp 'show' */
+  }
+
+  .navbar-right {
+    flex: 0 0 100%;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .navbar-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navbar-right {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .navbar-center a,
+  .navbar-center .link-button {
+    width: 100%;
+    text-align: left;
+    padding: 8px 0;
+  }
+
+  .navbar-right button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .burger-menu {
+    display: block;
+    cursor: pointer;
+  }
+
+  .burger-menu div {
+    width: 30px;
+    height: 4px;
+    background-color: #333;
+    margin: 5px 0;
+  }
+}
