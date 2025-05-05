@@ -10,6 +10,34 @@ require('dotenv').config();
  */
 const getProductById = async (productId) => {
     return await Product.findById(productId);
+}; 
+
+/**
+ * Tìm kiếm sản phẩm theo tên (gần đúng, không phân biệt hoa thường).
+ * @param {String} name - Tên sản phẩm cần tìm
+ * @returns {Promise<Array>} - Danh sách sản phẩm phù hợp
+ */
+const getProductByName = (name) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const regex = new RegExp(name, 'i'); // 'i' để không phân biệt hoa thường
+            const products = await Product.find({ name: { $regex: regex } });
+
+            if (!products || products.length === 0) {
+                return resolve({
+                    status: 'NOT_FOUND',
+                    message: 'Không tìm thấy sản phẩm nào phù hợp',
+                });
+            }
+
+            return resolve({
+                status: 'OK',
+                data: products,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
 };
 
 /**
@@ -189,7 +217,78 @@ const getProductReview = (productId) => {
     });
 };
 
+/**
+ * Lọc đánh giá theo điều kiện (rating, productId, userId, ngày).
+ * @param {Object} filterParams - Các điều kiện lọc: { productId, rating, userId, startDate, endDate }
+ * @returns {Promise<Object>} - Kết quả lọc đánh giá
+ */
+const filterReviews = (filterParams) => {
+   return new Promise(async (resolve, reject) => {
+       try {
+           const { productId, rating, userId, startDate, endDate } = filterParams;
 
+           const filter = {};
+           if (productId) filter.productId = productId;
+           if (userId) filter.userId = userId;
+           if (rating) filter.rating = Number(rating);
+           if (startDate || endDate) {
+               filter.createdAt = {};
+               if (startDate) filter.createdAt.$gte = new Date(startDate);
+               if (endDate) filter.createdAt.$lte = new Date(endDate);
+           }
+
+           const reviews = await Review.find(filter).populate('userId', 'name');
+
+           if (!reviews || reviews.length === 0) {
+               return resolve({
+                   status: 'NOT_FOUND',
+                   message: 'Không tìm thấy đánh giá phù hợp',
+               });
+           }
+
+           return resolve({
+               status: 'OK',
+               message: 'Lọc đánh giá thành công',
+               data: reviews,
+           });
+       } catch (error) {
+           reject(error);
+       }
+   });
+};
+
+/**
+ * Tính điểm đánh giá trung bình của một sản phẩm.
+ * @param {String} productId - ID của sản phẩm
+ * @returns {Promise<Object>} - Kết quả chứa điểm trung bình và số lượng đánh giá
+ */
+const getAverageRating = (productId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const reviews = await Review.find({ productId });
+
+            if (!reviews.length) {
+                return resolve({
+                    status: 'NOT_FOUND',
+                    message: 'Chưa có đánh giá nào cho sản phẩm này',
+                    averageRating: 0,
+                    totalReviews: 0
+                });
+            }
+
+            const total = reviews.reduce((sum, r) => sum + r.rating, 0);
+            const avg = total / reviews.length;
+
+            return resolve({
+                status: 'OK',
+                averageRating: Number(avg.toFixed(1)),
+                totalReviews: reviews.length
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
 
 /**
  * delete review by id.
@@ -219,11 +318,14 @@ const deleteProductReview = (reviewId) => {
 
 module.exports = {
     getProductById,
+    getProductByName,
     getAllProduct,
     createProduct,
     updateProduct,
     deleteProduct,
     createProductReview,
     getProductReview,
+    filterReviews,
+    getAverageRating,
     deleteProductReview,
 };

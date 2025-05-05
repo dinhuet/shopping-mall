@@ -23,6 +23,23 @@ class ProductController {
     }
 
     /**
+     * Search product by name.
+     * @param {*} req - Lấy id từ params.
+     * @param {*} res
+     * @param {*} next
+     */
+    searchProduct(req, res, next) {
+        const productName = req.query.name;
+    
+        productService
+            .getProductByName(productName)
+            .then((result) => {
+                res.status(200).json(result);
+            })
+            .catch(next);
+    }
+
+    /**
      * Get product detail by id.
      * @param {*} req - Lấy id từ params.
      * @param {*} res
@@ -130,6 +147,33 @@ class ProductController {
             .catch(next);
     }
 
+    /**
+     * Lọc các bình luận theo rating, id.
+     * @param {*} req
+     * @param {*} res
+     * @param {*} next
+     */
+    filterReviews(req, res, next) {
+        productService
+            .filterReviews(req.query) // nhận các điều kiện lọc từ query string
+            .then((result) => {
+                res.status(200).json(result);
+            })
+            .catch(next);
+    }
+
+    /**
+     * Lấy tất cả bình luận.
+     * @param {*} req
+     * @param {*} res
+     * @param {*} next
+     */
+    getAverageRating(req, res, next) {
+        reviewService
+            .getAverageRating(req.params.productId)
+            .then((result) => res.status(200).json(result))
+            .catch(next);
+    }
     
     /**
      * delete product review by reviewId.

@@ -5,6 +5,8 @@ const productController = require('../app/controllers/ProductController');
 const authMiddleware = require('../app/middlewares/authMiddleware');
 
 router.get('/detail/:id', productController.getProductDetail);
+router.get('/search', productController.searchProduct);
+router.get('/average/:productId', reviewController.getAverageRating);
 router.post(
     '/review/:id',
     authMiddleware.verifyToken,
@@ -13,10 +15,11 @@ router.post(
 router.delete(
     '/review/:id',
     authMiddleware.verifyToken,
-    authMiddleware.verifyAdmin, 
+    authMiddleware.verifyAdmin,
     productController.deleteProductReview
 );
 router.get('/review/:id', productController.getProductReview);
+router.get('/filter', reviewController.filterReviews);
 router.put(
     '/update/:id',
     authMiddleware.verifyToken,
