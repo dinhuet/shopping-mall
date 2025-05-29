@@ -6,6 +6,7 @@ import ProductDetail from './pages/ProductDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
+import Product from './pages/Product';
 import Support from './pages/Support'; 
 import NotFound from './pages/NotFound';
 import Navbar from './components/Navbar';
@@ -35,6 +36,7 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route path ="/products" element={<Product />} />
                 <Route path="/support" element={<Support />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

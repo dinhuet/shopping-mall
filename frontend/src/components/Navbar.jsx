@@ -32,7 +32,7 @@ function Navbar() {
         <Link to="/" onClick={scrollToTop}>
           <span role="img" aria-label="home">🏠</span> Trang chủ
         </Link>
-        <Link to="/#featured-products">
+        <Link to="/products">
           <span role="img" aria-label="products">📦</span> Sản phẩm
         </Link>
         <Link to="/support">

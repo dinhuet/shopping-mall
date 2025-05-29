@@ -57,8 +57,10 @@ function Home() {
     const fetchProducts = async () => {
       try {
         const response = await productAPI.getAll();
-        if (Array.isArray(response)) {
-          setProducts(response);
+        console.log(typeof response, response);
+        // Kiểm tra xem response có phải là mảng hay không
+        if (Array.isArray(response.data)) {
+          setProducts(response.data);
         } else {
           setError('Dữ liệu sản phẩm không hợp lệ.');
         }
@@ -116,10 +118,10 @@ function Home() {
       )}
 
       <div className="product-list">
-        {products.map((product) => (
-          <ProductCard key={product._id || product.id} product={product} />
-        ))}
-      </div>
+  {products.map((product) => (
+    <ProductCard key={product._id || product.id} product={product} />
+  ))}
+</div>
 
       {/* Thêm ảnh Shopping.jpg */}
       <div className="shopping-image">

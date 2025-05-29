@@ -2,11 +2,11 @@ import axiosClient from './axiosClient';
 
 const productAPI = {
   getAll: () => {
-    return axiosClient.get('/products');
+    return axiosClient.get('/product/');
   },
 
   getById: (id) => {
-    return axiosClient.get(`/products/${id}`);
+    return axiosClient.get(`/product/detail/${id}`);
   },
 };
 
