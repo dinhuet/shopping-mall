@@ -23,17 +23,17 @@ Hệ thống Shopping-mall là nền tảng bán hàng trực tuyến giúp ngư
 |------------|--------------------------|
 | Frontend   | React.js, React Router, Context API |
 | Backend    | Node.js, Express.js, JWT  |
-| Database   | MongoDB     |
+| Database   | MongoDB Atlas với Mongoose     |
 | Tools      | Prettier, ESLint, Nodemon|
 
 ---
 
 ## Cài đặt và chạy ứng dụng
-Xem trong Backend và Fronend
+Xem trong Backend và Frontend
 
 ---
 
-##Liên hệ
+## Liên hệ
 Mọi thắc mắc hoặc góp ý vui lòng liên hệ:
 
 Email: 23020043@vnu.edu.vn
