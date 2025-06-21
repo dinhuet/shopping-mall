@@ -15,9 +15,9 @@ class ProductController {
      */
     getListproduct(req, res, next) {
         productService
-            .getAllProduct()
+            .getAllProduct(req.query.type)
             .then((products) => {
-                res.json(muiltipleMongooseToObject(products));
+                res.json(muiltipleMongooseToObject(products.data));
             })
             .catch(next);
     }
