@@ -16,8 +16,26 @@ const getProductById = async (productId) => {
  * get all product service.
  * @returns
  */
-const getAllProduct = async () => {
-    return await Product.find({});
+const getAllProduct = async (type) => {
+    // return await Product.find({});
+    return new Promise(async (resolve, reject) => {
+        try {
+            let products = [];
+            if (type === 'both') {
+                products = await Product.find({});
+            } else
+                products = await Product.find({
+                    type: type || { $exists: true },
+                });
+            return resolve({
+                status: 'OK',
+                message: 'Products retrieved successfully',
+                data: products,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
 };
 
 /**

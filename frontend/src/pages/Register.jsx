@@ -1,103 +1,106 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authAPI from '../api/authAPI';
+import { useAuth } from '../context/AuthContext';
+
 import './Register.css';
 
 function Register() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    phone: '',
-    isAdmin: false, // vẫn giữ để gửi lên backend, không hiển thị trong form
-  });
-
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        phone: '',
+        isAdmin: false, // vẫn giữ để gửi lên backend, không hiển thị trong form
     });
-  };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+    const [error, setError] = useState('');
+    const { register } = useAuth();
+    const navigate = useNavigate();
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Mật khẩu và xác nhận mật khẩu không khớp');
-      return;
-    }
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
 
-    try {
-      const payload = {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-        phone: formData.phone,
-        isAdmin: false, // ép cứng luôn là false để không cần chọn
-      };
+    const handleRegister = async (e) => {
+        e.preventDefault();
 
-      await authAPI.register(payload);
-      navigate('/login');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại');
-    }
-  };
+        if (formData.password !== formData.confirmPassword) {
+            setError('Mật khẩu và xác nhận mật khẩu không khớp');
+            return;
+        }
 
-  return (
-    <div className="register">
-      <h2>Đăng ký</h2>
-      {error && <p className="error">{error}</p>}
-      <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Họ và tên"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Mật khẩu"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Xác nhận mật khẩu"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="Số điện thoại"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Đăng ký</button>
-      </form>
-    </div>
-  );
+        try {
+            const payload = {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+                confirmPassword: formData.confirmPassword,
+                phone: formData.phone,
+                isAdmin: false, // ép cứng luôn là false để không cần chọn
+            };
+
+            await register(payload);
+            navigate('/login');
+        } catch (err) {
+            console.error('Register Error:', err);
+            setError(err.message || 'Có lỗi xảy ra, vui lòng thử lại');
+        }
+    };
+
+    return (
+        <div className="register">
+            <h2>Đăng ký</h2>
+            {error && <p className="error">{error}</p>}
+            <form onSubmit={handleRegister}>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Họ và tên"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Mật khẩu"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Xác nhận mật khẩu"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="text"
+                    name="phone"
+                    placeholder="Số điện thoại"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                />
+                <button type="submit">Đăng ký</button>
+            </form>
+        </div>
+    );
 }
 
 export default Register;

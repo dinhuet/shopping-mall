@@ -20,36 +20,39 @@
   align-items: center;
 }
 
-.logo {
-  text-decoration: none;
+.shop-name {
   font-size: 24px;
   font-weight: bold;
   color: #333;
-  display: flex;
-  align-items: center;
+  text-decoration: none;
+  margin-right: 20px;
+  border: 2px solid transparent; 
+  background-color: transparent;
 }
 
-.shop-name {
-  margin-left: 8px;
-}
+
 
 .navbar-center {
   flex: 2;
   display: flex;
   justify-content: center;
   gap: 25px;
+  
 }
 
-.navbar-center a {
+.navbar-center button {
   text-decoration: none;
   color: #333;
   font-weight: 500;
   font-size: 16px;
   transition: color 0.3s ease;
+  border: 2px solid transparent; 
+  border-radius: 4px; 
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 
-.navbar-center a:hover {
-  color: #007bff;
+.navbar-center button:hover {
+  border-color: black;
 }
 
 .navbar-right {
@@ -57,35 +60,29 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 20px;
+  gap: 5px;
 }
 
-.navbar-right a,
+
 .navbar-right button {
   text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
   color: #333;
+  font-weight: 500;
+  font-size: 14px;
   transition: color 0.3s ease;
+  border: 2px solid transparent; 
+  border-radius: 4px; 
+  transition: color 0.3s ease, border-color 0.3s ease;
+  background-color: transparent;
 }
 
-.navbar-right a:hover,
-.navbar-right button:hover {
-  color: #007bff;
-}
-
-.navbar-right button {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
 
 .navbar-right button:hover {
-  background-color: #c0392b;
+  border-color: black;
+  background-color: #dedede;
 }
+
+
 
 .greeting {
   font-size: 16px;
