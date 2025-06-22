@@ -64,7 +64,7 @@ class UserController {
                 }
                 return res
                     .status(result.status)
-                    .json({ message: result.message });
+                    .json({ data: result });
             })
             .catch((error) => {
                 return res.status(400).json({ message: error.message });

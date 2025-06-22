@@ -8,6 +8,7 @@ export const CartProvider = ({ children }) => {
 
     const token = localStorage.getItem('token');
 
+    
     const fetchCart = async () => {
         try {
             const res = await cartAPI.getCart(token);
@@ -19,14 +20,15 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = async (productId) => {
         try {
+            console.log(cartItems, 'cartItems in addToCart');
             if (
                 cartItems &&
-                cartItems.some((item) => item.product._id === productId)
+                cartItems.some((item) => item.productId === productId)
             ) {
                 await cartAPI.updateCartItem(productId, 1, token);
                 fetchCart();
             } else {
-                const res = await cartAPI.addToCart(productId, 1, token);
+                 await cartAPI.addToCart(productId, 1, token);
                 fetchCart();
             }
         } catch (err) {

@@ -34,7 +34,8 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         try {
             const res = await authAPI.login(credentials);
-            localStorage.setItem('token', res.accessToken);
+            console.log('Đăng nhập thành công:', res);
+            localStorage.setItem('token', res.access_token);
             setUser(res.user);
             return { success: true };
         } catch (err) {
@@ -49,18 +50,18 @@ export const AuthProvider = ({ children }) => {
     // Hàm đăng ký
     const register = async (userData) => {
         const res = await authAPI.register(userData);
-        setUser(res.user); // nếu backend trả lại user sau khi đăng ký
         return res;
     };
 
     // Hàm đăng xuất
-    const logout = async (userData) => {
+    const logout = async () => {
+        const token = localStorage.getItem('token');
         try {
             const confirmed = window.confirm(
                 'Bạn có chắc chắn muốn đăng xuất không?',
             );
             if (confirmed) {
-                await authAPI.logout(userData);
+                await authAPI.logout(token);
                 localStorage.removeItem('token');
                 setUser(null);
                 return { success: true };
