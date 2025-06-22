@@ -48,7 +48,6 @@ function Navbar() {
                 <Link to="/cart" className="cart-icon">
                     🛒 <span>({cartItems.length})</span>
                 </Link>
-
                 {user ? (
                     <>
                         <span className="greeting">

@@ -9,9 +9,13 @@ const cartAPI = {
         });
     },
 
-    addToCart: (productId, quantity = 1, token) => {
+    addToCart: (productId, quantity, token) => {
+        if (!token) {
+            window.alert('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.');
+            return Promise.reject(new Error('Unauthorized'));
+        }
         return axiosClient.post(
-            '/cart',
+            '/cart/add',
             { productId, quantity },
             {
                 headers: {

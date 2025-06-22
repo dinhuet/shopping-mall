@@ -17,15 +17,20 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    const addToCart = async (productId, quantity = 1) => {
+    const addToCart = async (productId) => {
         try {
-            await cartAPI.addToCart(productId, quantity, token);
-            fetchCart();
+            if (
+                cartItems &&
+                cartItems.some((item) => item.product._id === productId)
+            ) {
+                await cartAPI.updateCartItem(productId, 1, token);
+                fetchCart();
+            } else {
+                const res = await cartAPI.addToCart(productId, 1, token);
+                fetchCart();
+            }
         } catch (err) {
-            console.error(
-                'Lỗi thêm vào giỏ hàng:',
-                err.response?.data?.message,
-            );
+            console.error('Lỗi thêm vào giỏ hàng:', err);
         }
     };
 

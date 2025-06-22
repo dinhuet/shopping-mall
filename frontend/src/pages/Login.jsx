@@ -12,7 +12,7 @@ function Login() {
 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(''); // Thêm trạng thái success
-    const { setUser } = useAuth();
+    const { login } = useAuth(); // Lấy hàm login từ AuthContext
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -31,17 +31,12 @@ function Login() {
         setSuccess('');
 
         try {
-            const response = await authAPI.login(credentials);
+            const response = await login(credentials); // Gọi hàm login từ AuthContext
 
             // ✅ response chính là response.data (vì đã .then(...response.data))
             console.log('API Response:', response);
 
-            const { access_token, user } = response;
-
-            if (access_token && user) {
-                localStorage.setItem('accessToken', access_token);
-                setUser(user);
-
+            if (response.success) {
                 navigate('/', {
                     replace: true,
                     state: { fromLogin: true },

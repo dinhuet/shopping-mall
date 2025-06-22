@@ -24,6 +24,7 @@ const ProductDetail = () => {
     }, [id]);
 
     if (!product) return <p>Đang tải...</p>;
+    console.log('Product Detail:', product);
 
     return (
         <div>

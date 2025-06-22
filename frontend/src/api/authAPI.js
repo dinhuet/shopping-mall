@@ -46,7 +46,7 @@ const authAPI = {
 
     getProfile: (token) => {
         return axiosClient
-            .get('/user/profile', {
+            .get('/user', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

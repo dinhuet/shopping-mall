@@ -8,11 +8,11 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
     // Lấy token từ localStorage
-    const token = localStorage.getItem('token');
 
     // Hàm lấy thông tin user nếu đã đăng nhập
     useEffect(() => {
         const fetchProfile = async () => {
+            const token = localStorage.getItem('token');
             if (token) {
                 try {
                     const res = await authAPI.getProfile(token);
@@ -28,20 +28,17 @@ export const AuthProvider = ({ children }) => {
             }
         };
         fetchProfile();
-    }, [token]);
+    }, []);
 
     // Hàm đăng nhập
     const login = async (credentials) => {
         try {
             const res = await authAPI.login(credentials);
-            localStorage.setItem('token', res.data.token);
-            setUser(res.data.user);
+            localStorage.setItem('token', res.accessToken);
+            setUser(res.user);
             return { success: true };
         } catch (err) {
-            console.error(
-                'Lỗi đăng nhập:',
-                err?.response?.data?.message || err.message,
-            );
+            console.error('Lỗi đăng nhập:', err);
             return {
                 success: false,
                 message: err?.response?.data?.message || 'Đăng nhập thất bại',

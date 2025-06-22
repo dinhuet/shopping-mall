@@ -13,43 +13,23 @@ function Home() {
     const location = useLocation();
 
     useEffect(() => {
+        let timeoutId;
         if (location.hash === '#featured-products') {
-            setTimeout(() => {
+            timeoutId = setTimeout(() => {
                 if (featuredRef.current) {
                     featuredRef.current.scrollIntoView({ behavior: 'smooth' });
                 }
             }, 100); // delay nhỏ
         } else if (location.hash === '#contact-section') {
-            setTimeout(() => {
+            timeoutId = setTimeout(() => {
                 if (contactRef.current) {
                     contactRef.current.scrollIntoView({ behavior: 'smooth' });
                 }
             }, 100); // delay nhỏ
         }
+
+        return () => clearTimeout(timeoutId);
     }, [location]);
-
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        const fetchProducts = async () => {
-            try {
-                const response = await productAPI.getAll();
-                console.log(typeof response, response);
-                // Kiểm tra xem response có phải là mảng hay không
-                if (Array.isArray(response.data)) {
-                    setProducts(response.data);
-                } else {
-                    setError('Dữ liệu sản phẩm không hợp lệ.');
-                }
-            } catch (err) {
-                setError('Không thể tải sản phẩm. Vui lòng thử lại sau.');
-                console.error('Lỗi khi lấy sản phẩm:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProducts();
-    }, []);
 
     return (
         <div className="home-container">
