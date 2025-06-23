@@ -24,7 +24,7 @@ export const CartProvider = ({ children }) => {
             console.log(cartItems, 'cartItems in addToCart');
             if (
                 cartItems &&
-                cartItems.some((item) => item.productId === productId)
+                cartItems.items.some((item) => item.productId === productId)
             ) {
                 await cartAPI.updateCartItem(productId, 1, token);
                 fetchCart();

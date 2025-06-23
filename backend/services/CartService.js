@@ -71,7 +71,7 @@ const updateCart = (userId, item) => {
         try {
             const cart = await Cart.findOneAndUpdate(
                 { userId },
-                { $set: { 'items.$[item].quantity': quantity } },
+                { $inc: { 'items.$[item].quantity': quantity } },
                 {
                     new: true,
                     arrayFilters: [{ 'item.productId': productId }],

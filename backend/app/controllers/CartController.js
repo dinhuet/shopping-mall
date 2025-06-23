@@ -11,7 +11,8 @@ class CartController {
         cartService
             .getCartById(req.user.id)
             .then((items) => {
-                res.status(200).json(muiltipleMongooseToObject(items));
+                const cart = items[0];
+                res.status(200).json(mongooseToObject(cart));
             })
             .catch(next);
     }

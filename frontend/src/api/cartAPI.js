@@ -28,8 +28,8 @@ const cartAPI = {
 
     updateCartItem: (productId, quantity, token) => {
         return axiosClient.put(
-            `/cart/${productId}`,
-            { quantity },
+            `/cart/update/`,
+            { productId,quantity },
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
