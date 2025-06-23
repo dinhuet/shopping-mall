@@ -10,6 +10,7 @@ const cartAPI = {
     },
 
     addToCart: (productId, quantity, token) => {
+        console.log(token);
         if (!token) {
             window.alert('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.');
             return Promise.reject(new Error('Unauthorized'));

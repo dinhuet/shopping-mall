@@ -3,6 +3,9 @@ const cors = require('cors'); // Import cors module
 const app = express();
 const route = require('./routes');
 const db = require('./config/db');
+const cookieParser = require('cookie-parser');
+
+
 
 require('dotenv').config(); // Load biến môi trường từ .env
 
@@ -17,7 +20,7 @@ app.use(
         credentials: true, // Cho phép gửi cookie/token trong yêu cầu CORS
     }),
 );
-
+app.use(cookieParser()); // ✅ Đọc cookie từ request
 // Connect to db
 db.connect((err) => {
     if (err) throw err;

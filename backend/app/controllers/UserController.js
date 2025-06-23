@@ -60,6 +60,16 @@ class UserController {
             .loginUser(req.body)
             .then((result) => {
                 if (result.status === 'OK') {
+
+                    console.log("Login successful:", result.refresh_token);
+
+                    res.cookie("refresh_token", result.refresh_token, {
+                    httpOnly: true, 
+                    secure: false, // bật khi dùng HTTPS
+                    sameSite: "Lax", // hoặc 'Lax' tùy frontend
+                    path: "/user", // cookie chỉ gửi khi gọi đúng route này
+                    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
+                });
                     return res.status(200).json(result);
                 }
                 return res
@@ -82,6 +92,12 @@ class UserController {
             .logoutUser(req.user)
             .then((result) => {
                 if (result.status === 'OK') {
+                    res.clearCookie('refresh_token', {
+        httpOnly: true,
+        secure: false, // hoặc true nếu dùng HTTPS
+        sameSite: 'Lax',
+        path: '/user', // cookie chỉ xóa khi gọi đúng route này
+    });
                     return res.status(200).json(result);
                 }
                 return res

@@ -191,12 +191,14 @@ const loginUser = (userLogin) => {
                 );
 
                 await User.findByIdAndUpdate(user._id, { refresh_token });
+                console.log('User logged in:', user);
 
                 return resolve({
                     status: 'OK',
                     message: 'Login successful',
                     user: user,
                     access_token,
+                    refresh_token,
                 });
             }
         } catch (error) {
@@ -223,7 +225,6 @@ const logoutUser = (userLogout) => {
             }
 
             await User.findByIdAndUpdate(user._id, { refresh_token: '' });
-
             return resolve({
                 status: 'OK',
                 message: 'Logout successful',
