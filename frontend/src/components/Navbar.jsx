@@ -5,7 +5,7 @@ import { useCart } from '../context/CartContext';
 import './Navbar.css';
 
 function Navbar() {
-    const { user, logout } = useAuth();
+    const { user, logout, loading } = useAuth();
     const { cartItems } = useCart();
     const navigate = useNavigate();
 
@@ -17,7 +17,8 @@ function Navbar() {
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
-
+    console.log('User in Navbar:', user);
+    if (loading) return <div className="loading">Loading...</div>;
     return (
         <nav className="navbar">
             {/* Bên trái - Logo */}

@@ -18,6 +18,11 @@ const getAllUser = async () => {
     return await User.find({});
 };
 
+const getUserProfile = async (user) => {
+    const id = user.id;
+    return await User.findById(id);
+}
+
 /**
  * Tạo resetToken.
  * @param {String} userId - ID người dùng.
@@ -363,6 +368,7 @@ module.exports = {
     getUserById,
     getAllUser,
     getUserByEmail,
+    getUserProfile,
     createUser,
     loginUser,
     logoutUser,

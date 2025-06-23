@@ -10,8 +10,6 @@ const {
 class AuthMiddleWare {
     // check accesstoken
     async verifyToken(req, res, next) {
-        
-
         try {
             const token =
                 req.body.refresh_token ||

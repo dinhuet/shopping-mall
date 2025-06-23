@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     // Lấy token từ localStorage
 
@@ -16,7 +17,8 @@ export const AuthProvider = ({ children }) => {
             if (token) {
                 try {
                     const res = await authAPI.getProfile(token);
-                    setUser(res.data); // Cập nhật user nếu có
+                    console.log('Thông tin người dùng:', res);
+                    setUser(res); // Cập nhật user nếu có
                 } catch (err) {
                     console.error(
                         'Lỗi khi lấy thông tin người dùng:',
@@ -26,9 +28,14 @@ export const AuthProvider = ({ children }) => {
                     setUser(null);
                 }
             }
+            setLoading(false); // Đặt loading thành false sau khi hoàn thành
         };
         fetchProfile();
     }, []);
+
+    // useEffect(() => {
+    //     console.log('User state đã được cập nhật:', user);
+    // }, [user]);
 
     // Hàm đăng nhập
     const login = async (credentials) => {
@@ -86,6 +93,7 @@ export const AuthProvider = ({ children }) => {
                 login,
                 logout,
                 register,
+                loading,
                 isAuthenticated: !!user,
             }}
         >

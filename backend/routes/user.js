@@ -18,6 +18,6 @@ router.put(
     userController.updateProfile,
 );
 
-router.get('/', userController.getUserProfile);
+router.get('/', authMiddleware.verifyToken, userController.getUserProfile);
 
 module.exports = router;

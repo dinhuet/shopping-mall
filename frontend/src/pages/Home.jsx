@@ -1,16 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
-import productAPI from '../api/productAPI';
+import React, { useEffect, useRef } from 'react';
 import './Home.css';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
 
 function Home() {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const featuredRef = useRef(null);
     const contactRef = useRef(null); // Thêm ref cho phần Liên hệ
 
     const location = useLocation();
+    const { loading } = useAuth();
 
     useEffect(() => {
         let timeoutId;
@@ -31,6 +30,7 @@ function Home() {
         return () => clearTimeout(timeoutId);
     }, [location]);
 
+    if (loading) return <div className="loading">Loading...</div>;
     return (
         <div className="home-container">
             <div className="hero-video">
