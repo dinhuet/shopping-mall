@@ -15,17 +15,17 @@ const authAPI = {
     },
 
     logout: (token) => {
-    return axiosClient.post(
-        '/user/logout',
-        {}, // 👈 nếu không có body thì truyền object rỗng
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
+        return axiosClient.post(
+            '/user/logout',
+            {}, // 👈 nếu không có body thì truyền object rỗng
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
             },
-            withCredentials: true,
-        }
-    );
-},
+        );
+    },
 
     register: (userData) => {
         return axiosClient

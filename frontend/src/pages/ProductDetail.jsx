@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 const ProductDetail = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
+    const [quantity, setQuantity] = useState(1);
     const { addToCart } = useCart();
 
     useEffect(() => {
@@ -32,7 +33,13 @@ const ProductDetail = () => {
             <h2>{product.name}</h2>
             <p>Giá: {product.price}₫</p>
             <p>{product.description}</p>
-            <button onClick={() => addToCart(product._id)}>
+            <input
+                type="number"
+                min={1}
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+            />
+            <button onClick={() => addToCart(product._id, quantity)}>
                 Thêm vào giỏ hàng
             </button>
         </div>

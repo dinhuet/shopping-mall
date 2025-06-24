@@ -1,35 +1,51 @@
-import React, { createContext, useContext, useEffect, useState, useCallback  } from 'react';
+import React, {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+    useCallback,
+} from 'react';
 import cartAPI from '../api/cartAPI';
+import { useAuth } from './AuthContext'; // Import hook để lấy token
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState([]);
+    const [cartItems, setCartItems] = useState({ items: [], totalPrice: 0 });
+    const { token } = useAuth(); // Sử dụng hook để lấy token từ AuthContext
 
-    const token = localStorage.getItem('token');
-    console.log('Token in CartProvider:', token);
-
-    
     const fetchCart = useCallback(async () => {
+        console.log('Token trong CartContext:', token); // Kiểm tra token
         try {
-            const res = await cartAPI.getCart(token);
-            setCartItems(res.data);
+            if (!token) {
+                console.warn('Không có token, không thể tải giỏ hàng.');
+                setCartItems({ items: [], totalPrice: 0 });
+            } else {
+                const res = await cartAPI.getCart(token);
+                if (!res.data) {
+                    console.warn('Giỏ hàng rỗng hoặc không có dữ liệu.');
+                    setCartItems({ items: [], totalPrice: 0 });
+                } else {
+                    console.log('Giỏ hàng đã tải:', res.data);
+                    setCartItems(res.data);
+                }
+            }
         } catch (err) {
             console.error('Lỗi khi tải giỏ hàng:', err.response?.data?.message);
         }
     }, [token]); // phụ thuộc token
 
-    const addToCart = async (productId) => {
+    const addToCart = async (productId, quantity) => {
         try {
             console.log(cartItems, 'cartItems in addToCart');
             if (
-                cartItems &&
+                cartItems.items.length !== 0 &&
                 cartItems.items.some((item) => item.productId === productId)
             ) {
-                await cartAPI.updateCartItem(productId, 1, token);
+                await cartAPI.updateCartItem(productId, quantity, token);
                 fetchCart();
             } else {
-                 await cartAPI.addToCart(productId, 1, token);
+                await cartAPI.addToCart(productId, quantity, token);
                 fetchCart();
             }
         } catch (err) {
@@ -51,6 +67,9 @@ export const CartProvider = ({ children }) => {
 
     useEffect(() => {
         if (token) fetchCart();
+        if (!token) {
+            setCartItems({ items: [], totalPrice: 0 }); // Nếu không có token, đặt giỏ hàng thành rỗng
+        }
     }, [token, fetchCart]);
 
     return (

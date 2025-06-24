@@ -29,7 +29,7 @@ const cartAPI = {
     updateCartItem: (productId, quantity, token) => {
         return axiosClient.put(
             `/cart/update/`,
-            { productId,quantity },
+            { productId, quantity },
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -39,11 +39,17 @@ const cartAPI = {
     },
 
     removeCartItem: (productId, token) => {
-        return axiosClient.delete(`/cart/${productId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
+        return axiosClient.put(
+            `/cart/remove`,
+            {
+                productId,
             },
-        });
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
     },
 };
 

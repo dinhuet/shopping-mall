@@ -3,7 +3,6 @@ import './Home.css';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-
 function Home() {
     const featuredRef = useRef(null);
     const contactRef = useRef(null); // Thêm ref cho phần Liên hệ

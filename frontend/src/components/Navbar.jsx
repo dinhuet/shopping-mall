@@ -5,7 +5,7 @@ import { useCart } from '../context/CartContext';
 import './Navbar.css';
 
 function Navbar() {
-    const { user, logout, loading } = useAuth();
+    const { user, logout, loading, token } = useAuth();
     const { cartItems } = useCart();
     const navigate = useNavigate();
 
@@ -20,8 +20,8 @@ function Navbar() {
     if (loading) return <div className="loading">Loading...</div>;
 
     console.log('Cart items in Navbar:', cartItems);
-    const quantityInCart = cartItems ? cartItems.items.length : 0;
-    
+    const quantityInCart = cartItems.items.length;
+
     return (
         <nav className="navbar">
             {/* Bên trái - Logo */}
@@ -50,7 +50,7 @@ function Navbar() {
             {/* Bên phải - Giỏ hàng + người dùng */}
             <div className="navbar-right">
                 <Link to="/cart" className="cart-icon">
-                    🛒 <span>({quantityInCart})</span>
+                    🛒 <span>({token ? quantityInCart : 0})</span>
                 </Link>
                 {user ? (
                     <>
