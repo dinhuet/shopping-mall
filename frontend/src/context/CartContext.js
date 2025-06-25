@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import cartAPI from '../api/cartAPI';
 import { useAuth } from './AuthContext'; // Import hook để lấy token
+import { toast } from 'react-toastify';
 
 const CartContext = createContext();
 
@@ -38,6 +39,10 @@ export const CartProvider = ({ children }) => {
     const addToCart = async (productId, quantity) => {
         try {
             console.log(cartItems, 'cartItems in addToCart');
+            if (quantity <= 0) {
+                toast.error('Số lượng phải lớn hơn 0');
+                return;
+            }
             if (
                 cartItems.items.length !== 0 &&
                 cartItems.items.some((item) => item.productId === productId)
@@ -48,8 +53,12 @@ export const CartProvider = ({ children }) => {
                 await cartAPI.addToCart(productId, quantity, token);
                 fetchCart();
             }
+            toast.success('Thêm vào giỏ hàng thành công!');
         } catch (err) {
             console.error('Lỗi thêm vào giỏ hàng:', err);
+            toast.error(
+                err.response?.data?.message || 'Thêm vào giỏ hàng thất bại',
+            );
         }
     };
 

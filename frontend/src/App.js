@@ -13,6 +13,8 @@ import Navbar from './components/Navbar';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 function App() {
@@ -41,9 +43,18 @@ function App() {
                         <Route path="/support" element={<Support />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
+                    <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        theme="light"
+      />
                 </BrowserRouter>
             </CartProvider>
         </AuthProvider>
+        
     );
 }
 

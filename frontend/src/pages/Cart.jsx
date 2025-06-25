@@ -2,10 +2,13 @@ import React from 'react';
 import { useCart } from '../context/CartContext';
 import productAPI from '../api/productAPI';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Cart.css'; // Import CSS for styling
 
 function Cart() {
     const { cartItems, removeFromCart } = useCart();
     const [productMap, setProductMap] = useState({});
+    const navigate = useNavigate();
 
     const total = cartItems.totalPrice ? cartItems.totalPrice : 0;
 
@@ -42,20 +45,24 @@ function Cart() {
         }
     }, [cartItems.items]);
 
+    const handleClick = (product_id) => {
+        navigate(`/product/${product_id}`);
+    }
+
     return (
         <div className="cart-container">
             <h2 className="cart-title">Giỏ hàng của bạn</h2>
-            {cartItems.length === 0 ? (
+            {cartItems.items.length === 0 ? (
                 <p className="empty-cart">Giỏ hàng đang trống.</p>
             ) : (
-                <div className="cart-list">
+                <div className="cart-list" >
                     {cartItems.items.map((item) => {
                         const product = productMap[item.productId];
                         console.log('Sản phẩm hiện tại:', product);
                         console.log('ID sản phẩm:', item.productId);
                         if (!product) return null; // Nếu sản phẩm không có, bỏ qua
                         return (
-                            <div key={product._id} className="cart-item">
+                            <div key={product._id} className="cart-item" onClick={() => handleClick(product._id)}>
                                 <img
                                     src={product.image}
                                     alt={product.name}
@@ -69,10 +76,11 @@ function Cart() {
                                     </p>
                                     <button
                                         className="remove-btn"
-                                        onClick={() =>
-                                            removeFromCart(product._id)
+                                        onClick={(e) =>
+                                        {   e.stopPropagation(); // Ngăn chặn sự kiện click lan truyền
+                                            removeFromCart(item.productId);
                                         }
-                                    >
+                                        }>
                                         Xoá
                                     </button>
                                 </div>
