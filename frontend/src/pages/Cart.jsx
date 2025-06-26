@@ -56,6 +56,7 @@ function Cart() {
                 <p className="empty-cart">Giỏ hàng đang trống.</p>
             ) : (
                 <div className="cart-list" >
+                    
                     {cartItems.items.map((item) => {
                         const product = productMap[item.productId];
                         console.log('Sản phẩm hiện tại:', product);
@@ -63,6 +64,7 @@ function Cart() {
                         if (!product) return null; // Nếu sản phẩm không có, bỏ qua
                         return (
                             <div key={product._id} className="cart-item" onClick={() => handleClick(product._id)}>
+                                
                                 <img
                                     src={product.image}
                                     alt={product.name}
@@ -83,13 +85,22 @@ function Cart() {
                                         }>
                                         Xoá
                                     </button>
-                                </div>
+                                </div>  
+                                
                             </div>
                         );
                     })}
-                    <h3 className="cart-total">
+                    <div className='footer-cart'>
+                        <h3 className="cart-total">
                         Tổng cộng: {total.toLocaleString()}₫
                     </h3>
+                    </div>
+                    <div className='button-cart'>
+                        <button className='button'>
+    Payment
+</button>
+                    </div>
+                    
                 </div>
             )}
         </div>
