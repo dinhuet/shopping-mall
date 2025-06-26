@@ -55,10 +55,10 @@ export const CartProvider = ({ children }) => {
             }
             toast.success('Thêm vào giỏ hàng thành công!');
         } catch (err) {
-            console.error('Lỗi thêm vào giỏ hàng:', err);
+            if (token)
             toast.error(
-                err.response?.data?.message || 'Thêm vào giỏ hàng thất bại',
-            );
+                    err.response?.data?.message || 'Thêm vào giỏ hàng thất bại',
+                );
         }
     };
 
