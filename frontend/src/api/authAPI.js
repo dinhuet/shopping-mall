@@ -14,16 +14,17 @@ const authAPI = {
             });
     },
 
-    logout: () => {
-        return axiosClient
-            .post('/user/logout', {}, { withCredentials: true })
-            .then((response) => response.data)
-            .catch((error) => {
-                throw new Error(
-                    error.response?.data?.message ||
-                        'Có lỗi xảy ra khi đăng xuất',
-                );
-            });
+    logout: (token) => {
+        return axiosClient.post(
+            '/user/logout',
+            {}, // 👈 nếu không có body thì truyền object rỗng
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            },
+        );
     },
 
     register: (userData) => {
@@ -46,7 +47,7 @@ const authAPI = {
 
     getProfile: (token) => {
         return axiosClient
-            .get('/user/profile', {
+            .get('/user', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

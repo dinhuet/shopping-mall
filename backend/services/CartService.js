@@ -71,7 +71,7 @@ const updateCart = (userId, item) => {
         try {
             const cart = await Cart.findOneAndUpdate(
                 { userId },
-                { $set: { 'items.$[item].quantity': quantity } },
+                { $inc: { 'items.$[item].quantity': quantity } },
                 {
                     new: true,
                     arrayFilters: [{ 'item.productId': productId }],
@@ -110,8 +110,9 @@ const updateCart = (userId, item) => {
  * @param {String} userId - ID người dùng
  * @param {String} productId - ID sản phẩm
  */
-const removeFromCart = (userId, productId) => {
+const removeFromCart = (userId, item) => {
     return new Promise(async (resolve, reject) => {
+        const { productId } = item;
         try {
             const cart = await Cart.findOneAndUpdate(
                 { userId },

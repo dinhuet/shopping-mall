@@ -11,7 +11,8 @@ class CartController {
         cartService
             .getCartById(req.user.id)
             .then((items) => {
-                res.status(200).json(muiltipleMongooseToObject(items));
+                const cart = items[0];
+                res.status(200).json(mongooseToObject(cart));
             })
             .catch(next);
     }
@@ -58,13 +59,12 @@ class CartController {
 
     /**
      * Remove product from cart.
-     * @param {*} req
      * - Lấy dữ liệu req.user thông qua middleware.
-     * - Truyền vào req.params.productId
+     * - Truyền vào req.body thông tin sản phẩm { productId }
      */
     removeFromCart(req, res, next) {
         cartService
-            .removeFromCart(req.user.id, req.params.id)
+            .removeFromCart(req.user.id, req.body)
             .then((cart) => {
                 if (cart.status === 'OK') {
                     return res.status(200).json(cart);

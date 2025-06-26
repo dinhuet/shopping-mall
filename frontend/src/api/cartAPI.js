@@ -1,4 +1,5 @@
 import axiosClient from './axiosClient';
+import { toast } from 'react-toastify';
 
 const cartAPI = {
     getCart: (token) => {
@@ -9,9 +10,14 @@ const cartAPI = {
         });
     },
 
-    addToCart: (productId, quantity = 1, token) => {
+    addToCart: (productId, quantity, token) => {
+        console.log(token);
+        if (!token) {
+            toast.error('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng');
+            return Promise.reject(new Error('Unauthorized'));
+        }
         return axiosClient.post(
-            '/cart',
+            '/cart/add',
             { productId, quantity },
             {
                 headers: {
@@ -23,8 +29,8 @@ const cartAPI = {
 
     updateCartItem: (productId, quantity, token) => {
         return axiosClient.put(
-            `/cart/${productId}`,
-            { quantity },
+            `/cart/update/`,
+            { productId, quantity },
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -34,11 +40,17 @@ const cartAPI = {
     },
 
     removeCartItem: (productId, token) => {
-        return axiosClient.delete(`/cart/${productId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
+        return axiosClient.put(
+            `/cart/remove`,
+            {
+                productId,
             },
-        });
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
     },
 };
 

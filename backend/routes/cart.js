@@ -8,7 +8,7 @@ router.get('/', authMiddleware.verifyToken, cartController.getCart);
 router.post('/add', authMiddleware.verifyToken, cartController.addToCart);
 router.put('/update', authMiddleware.verifyToken, cartController.updateCart);
 router.put(
-    '/remove/:id',
+    '/remove',
     authMiddleware.verifyToken,
     cartController.removeFromCart,
 );
