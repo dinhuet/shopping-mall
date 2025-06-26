@@ -8,8 +8,13 @@ require('dotenv').config();
  * @param {String} productId - ID sản phẩm
  * @returns
  */
-const getProductById = async (productId) => {
-    return await Product.findById(productId);
+const getProductById = async (productId, session = null) => {
+    const query = Product.findById(productId);
+        if (session) {
+            query.session(session);  
+        }
+        const product = await query.exec();
+        return product;
 };
 
 /**

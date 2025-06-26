@@ -1,0 +1,57 @@
+require('dotenv').config();
+const axios = require('axios');
+
+const API_KEY = process.env.ROUTE_SERVICE_API_KEY;
+
+
+async function getCoordinates(address) {
+  const url = `https://api.openrouteservice.org/geocode/search?api_key=${API_KEY}&text=${encodeURIComponent(address)}`;
+
+  try {
+    const response = await axios.get(url);
+    const coords = response.data.features[0].geometry.coordinates; 
+    return coords;
+  } catch (error) {
+    console.error('Lỗi khi lấy tọa độ:', error.message);
+    throw new Error('Không tìm được tọa độ cho địa chỉ: ' + address);
+  }
+}
+
+
+async function calculateShippingFee(origin, destination, ratePerKm = 2000) {
+  try {
+    const startCoords = await getCoordinates(origin);
+    const endCoords = await getCoordinates(destination);
+
+    const url = 'https://api.openrouteservice.org/v2/directions/driving-car';
+    const body = {
+      coordinates: [startCoords, endCoords]
+    };
+
+    const response = await axios.post(url, body, {
+      headers: {
+        'Authorization': API_KEY,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const distanceMeters = response.data.routes[0].summary.distance;
+    const distanceKm = distanceMeters / 1000;
+    const shippingFee = distanceKm * ratePerKm;
+    
+
+    return {
+      origin,
+      destination,
+      distanceKm: parseFloat(distanceKm.toFixed(2)),
+      shippingFee: Math.round(shippingFee)
+    };
+  } catch (error) {
+    console.error('Lỗi khi tính khoảng cách/phí ship:', error.message);
+    throw error;
+  }
+}
+
+module.exports = {
+  calculateShippingFee
+};
